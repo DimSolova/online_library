@@ -1,0 +1,24 @@
+# Environments
+.env
+.venv
+venv/
+env/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Alembic
+alembic/versions/  # ← пока что НЕ коммитим миграции? Нет, миграции коммитим!
+# Лучше так:
+# alembic/versions/__pycache__/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
