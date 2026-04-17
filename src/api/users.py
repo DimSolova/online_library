@@ -1,9 +1,11 @@
 from fastapi import APIRouter
 
 from src.schemas.users import UserAddRequest
+from src.services.users import UserService
 
 router = APIRouter(prefix='/users', tags=['Пользователи'])
 
-@router.post('')
+@router.post('/register')
 async def register_suer(data:UserAddRequest):
-    return {"status": "ok", "data": data}
+    res = await UserService().register_user(data)
+    return {"status": "ok", "data": res}
