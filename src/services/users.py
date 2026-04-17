@@ -1,4 +1,3 @@
-from src.repositories.users import UserRepository
 from src.schemas.users import UserAdd
 from src.services.base import BaseService
 
@@ -11,8 +10,9 @@ class UserService(BaseService):
             hashed_password=data.password,
             role_id=3
         )
-        await UserRepository(self.session).add(_data)
-        await self.session.commit()
+
+        await self.db.users.add(_data)
+        await self.db.commit()
 
         return data
 
