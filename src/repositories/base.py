@@ -3,7 +3,7 @@ from sqlalchemy import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import engine
-from src.models import Base
+from src.models.base import Base
 
 
 class BaseRepository:
@@ -18,6 +18,10 @@ class BaseRepository:
         add_stmt = (
             insert(self.model)
             .values(**data_dict)
+            .returning(self.model)
         )
         # print(add_stmt.compile(bind=engine, compile_kwargs={"literal_binds": True}))
-        await self.session.execute(add_stmt)
+        result = await self.session.execute(add_stmt)
+        model = result.scalar_one()
+        data = self.schema.model_validate(model)
+        return data

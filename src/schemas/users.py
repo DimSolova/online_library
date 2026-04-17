@@ -1,24 +1,24 @@
-from datetime import date
+from datetime import date, datetime
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 
 
-class UserAddRequest(BaseModel):
-
+class UserAddRequestDTO(BaseModel):
     username: str
     email: EmailStr
     password: str
 
-class UserAdd(BaseModel):
+class UserAddDTO(BaseModel):
     username: str
     email: EmailStr
     hashed_password: str
     role_id: int
 
-class User:
+
+class UserDTO(BaseModel):
+    id: int
     username: str
-    email: EmailStr
-    hashed_password: str
+    email: str
+    role_id: int | None
     is_active: bool
-    created_at: date
-    role_id: int
+    created_at: datetime
