@@ -30,6 +30,9 @@ class UserService(BaseService):
     def verify_password(self,plain_password, hashed_password):
         return password_hash.verify(plain_password, hashed_password)
 
+    def decode_token(self, token):
+        return jwt.decode(token, setting.SECRET_KEY, algorithms=[setting.ALGORITHM])
+
 
     async def register_user(self, data):
         hashed_password = self.get_password_hash(data.password)
@@ -51,6 +54,7 @@ class UserService(BaseService):
         if not self.verify_password(data.password, user.hashed_password):
             raise Exception
         data = {
+            "id":user.id,
             "username": user.username,
             "email": user.email,
             "role": user.role_id

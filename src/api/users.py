@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status, Response
 
-from src.api.dependencies import DBDep
+from src.api.dependencies import DBDep, UserIdDep
 from src.schemas.users import UserAddRequestDTO, UserLoginDTO
 from src.services.users import UserService
 
@@ -30,3 +30,7 @@ async def login_user(
 async def logout(response: Response):
     response.delete_cookie(key="access_token")
     return {"status": "success"}
+
+@router.get("/me", description="проверяет есть ли в куках jwt токен и возвращает пользователя")
+async def get_me(user: UserIdDep):
+    return user
