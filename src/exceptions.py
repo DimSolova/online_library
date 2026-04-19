@@ -17,6 +17,9 @@ class UserAlreadyExistsException(LibraryException):
 class InvalidCredentialsException(LibraryException):
     detail = "Неверный Логин или пароль"
 
+class InvalidTokenException(LibraryException):
+    detail = "Вы не предоставили токен"
+
 """Исключения для FastAPI"""
 class LibraryHTTPException(HTTPException):
     status_code = 500
@@ -31,3 +34,11 @@ class UserAlreadyExistsHTTPException(LibraryHTTPException):
 class InvalidCredentialsHTTPException(LibraryHTTPException):
     status_code = 401
     detail = "Неверный Логин или Пароль"
+
+class TokenNotFoundHTTPException(LibraryHTTPException):
+    status_code = 401
+    detail = "токен не найден"
+
+class InvalidTokenHTTPException(LibraryHTTPException):
+    status_code = 401
+    detail = "Неверный токен"

@@ -5,10 +5,11 @@
 from datetime import timedelta, datetime, timezone
 
 import jwt
+from jwt import PyJWTError
 from pwdlib import PasswordHash
 
 from src.config import setting
-from src.exceptions import ObjectAlreadyExistsException, UserAlreadyExistsException, InvalidCredentialsException
+from src.exceptions import ObjectAlreadyExistsException, UserAlreadyExistsException, InvalidCredentialsException, InvalidTokenException
 from src.schemas.users import UserAddDTO
 from src.services.base import BaseService
 
@@ -32,7 +33,11 @@ class UserService(BaseService):
         return password_hash.verify(plain_password, hashed_password)
 
     def decode_token(self, token):
-        return jwt.decode(token, setting.SECRET_KEY, algorithms=[setting.ALGORITHM])
+        try:
+            return jwt.decode(token, setting.SECRET_KEY, algorithms=[setting.ALGORITHM])
+        except PyJWTError:
+            raise InvalidTokenException
+
 
 
     async def register_user(self, data):
