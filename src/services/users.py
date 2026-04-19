@@ -8,6 +8,7 @@ import jwt
 from pwdlib import PasswordHash
 
 from src.config import setting
+from src.exceptions import ObjectAlreadyExistsException, UserAlreadyExistsException
 from src.schemas.users import UserAddDTO
 from src.services.base import BaseService
 
@@ -42,8 +43,11 @@ class UserService(BaseService):
             hashed_password=hashed_password,
             role_id=3
         )
-        user = await self.db.users.add(_data)
-        await self.db.commit()
+        try:
+            user = await self.db.users.add(_data)
+            await self.db.commit()
+        except ObjectAlreadyExistsException as ex:
+            raise UserAlreadyExistsException from ex
         return user
 
     async def login_user(self, data):

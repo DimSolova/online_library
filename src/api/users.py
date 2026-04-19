@@ -1,6 +1,7 @@
 from fastapi import APIRouter, status, Response
 
 from src.api.dependencies import DBDep, UserIdDep
+from src.exceptions import UserAlreadyExistsException, UserAlreadyExistsHTTPException
 from src.schemas.users import UserAddRequestDTO, UserLoginDTO
 from src.services.users import UserService
 
@@ -8,7 +9,10 @@ router = APIRouter(prefix='/users', tags=['Пользователи'])
 
 @router.post('/register', status_code=status.HTTP_201_CREATED)
 async def register_user(db:DBDep, data:UserAddRequestDTO) -> dict:
-    user = await UserService(db).register_user(data)
+    try:
+        user = await UserService(db).register_user(data)
+    except UserAlreadyExistsException:
+        raise UserAlreadyExistsHTTPException()
     return {
         "status": "success",
         "data": user
