@@ -14,6 +14,10 @@ class ObjectAlreadyExistsException(LibraryException):
 class UserAlreadyExistsException(LibraryException):
     detail = "email уже существует"
 
+class InvalidCredentialsException(LibraryException):
+    detail = "Неверный Логин или пароль"
+
+"""Исключения для FastAPI"""
 class LibraryHTTPException(HTTPException):
     status_code = 500
     detail = "Object not found"
@@ -23,3 +27,7 @@ class LibraryHTTPException(HTTPException):
 class UserAlreadyExistsHTTPException(LibraryHTTPException):
     status_code = 409
     detail = "Пользователь с таким email существует"
+
+class InvalidCredentialsHTTPException(LibraryHTTPException):
+    status_code = 401
+    detail = "Неверный Логин или Пароль"

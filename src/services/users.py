@@ -8,7 +8,7 @@ import jwt
 from pwdlib import PasswordHash
 
 from src.config import setting
-from src.exceptions import ObjectAlreadyExistsException, UserAlreadyExistsException
+from src.exceptions import ObjectAlreadyExistsException, UserAlreadyExistsException, InvalidCredentialsException
 from src.schemas.users import UserAddDTO
 from src.services.base import BaseService
 
@@ -37,26 +37,28 @@ class UserService(BaseService):
 
     async def register_user(self, data):
         hashed_password = self.get_password_hash(data.password)
-        _data = UserAddDTO(
+        token_data = UserAddDTO(
             username=data.username,
             email=data.email,
             hashed_password=hashed_password,
             role_id=3
         )
         try:
-            user = await self.db.users.add(_data)
+            user = await self.db.users.add(token_data)
             await self.db.commit()
         except ObjectAlreadyExistsException as ex:
             raise UserAlreadyExistsException from ex
         return user
 
     async def login_user(self, data):
-        """Получаем юзера по email, даже если пароль не верный,
-         а далее делаем проверку на пароль
-        Если прошло то возвращаем пользователя"""
+        """Получаем пользователя и далее делаем проверку на
+        Существующего пользователя и на верный пароль и оборачиваем в одно исключение
+        Лучше возвращать одну ошибку на email и password"""
         user = await self.db.users.get_user_with_hashed_password(data.email)
-        if not self.verify_password(data.password, user.hashed_password):
-            raise Exception
+        if not user or not self.verify_password(data.password, user.hashed_password):
+            raise InvalidCredentialsException
+
+
         data = {
             "id":user.id,
             "username": user.username,

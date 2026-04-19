@@ -1,7 +1,8 @@
 from fastapi import APIRouter, status, Response
 
 from src.api.dependencies import DBDep, UserIdDep
-from src.exceptions import UserAlreadyExistsException, UserAlreadyExistsHTTPException
+from src.exceptions import UserAlreadyExistsException, UserAlreadyExistsHTTPException,\
+    InvalidCredentialsException, InvalidCredentialsHTTPException
 from src.schemas.users import UserAddRequestDTO, UserLoginDTO
 from src.services.users import UserService
 
@@ -23,11 +24,14 @@ async def login_user(
         response: Response,
         db:DBDep,
         data:UserLoginDTO):
-    token = await UserService(db).login_user(data)
+    try:
+        token = await UserService(db).login_user(data)
+    except InvalidCredentialsException:
+        raise InvalidCredentialsHTTPException()
     response.set_cookie("access_token", token)
     return {
         "status": "success",
-        "user": token
+        "access_token": token
     }
 
 @router.post("/logout")
