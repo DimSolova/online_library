@@ -5,7 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from src.models import Base   # твой базовый класс
 
 
-class Book(Base):
+class BookOrm(Base):
     __tablename__ = "books"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
@@ -42,4 +42,4 @@ class Book(Base):
 
     # здесь нужен блок коментарий
     def __repr__(self) -> str:
-        return f"<Book(id={self.id}, title='{self.title}', author='{self.author}')>"
+        return f"<Book {self.id=} {self.title=} {self.author=} {self.isbn=}>"

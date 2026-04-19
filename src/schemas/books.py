@@ -1,0 +1,36 @@
+from datetime import datetime
+
+from pydantic import BaseModel, ConfigDict
+
+
+class AddBookRequestDTO(BaseModel):
+    title: str
+    description: str
+    isbn: str
+    author: str
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "title": "Идиот",
+                "description": "Книга про идиота",
+                "isbn": "9785389071278",
+                "author": "Ф.М. Достоевский"
+            }
+        })
+
+class BookAdd(AddBookRequestDTO):
+    added_by_id: int
+
+class BookDTO(BaseModel):
+    id: int
+    title: str
+    author: str
+    isbn: str
+    description: str
+    added_by_id: int
+    created_at: datetime
+    updated_at: datetime
+
+    #Очень важный момент при валидировании из модели в схему
+    model_config = ConfigDict(from_attributes=True)

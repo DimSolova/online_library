@@ -28,6 +28,12 @@ class UserAddDTO(BaseModel):
     hashed_password: str
     role_id: int
 
+class UserTokenDTO(BaseModel):
+    id: int
+    username: str
+    email: EmailStr
+    role: int
+    exp:int
 
 class UserDTO(BaseModel):
     id: int

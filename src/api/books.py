@@ -1,0 +1,33 @@
+from fastapi import APIRouter
+
+from src.api.dependencies import UserRoleDep, DBDep
+from src.exceptions import ISBNAlreadyExistsException, ISBNBookAlreadyExistsHTTPException
+from src.schemas.books import AddBookRequestDTO
+from src.services.books import BooksService
+
+router = APIRouter(prefix="/books", tags=["Книги"])
+
+@router.post("")
+async def add_book(
+        data: AddBookRequestDTO,
+        user: UserRoleDep,
+        db: DBDep
+):
+    """Создаёт новую книгу в библиотеке.
+        Требует авторизации пользователя.
+        Args:
+            data: Данные новой книги
+            user: Текущий авторизованный пользователь
+            db: Сессия базы данных
+        Returns:
+            dict: {"status": "ok", "data": BookDTO}
+        Raises: ISBNBookAlreadyExistsHTTPException: Если ISBN уже существует
+        """
+    try:
+        data = await BooksService(db).add_book(user, data)
+    except ISBNAlreadyExistsException:
+        raise ISBNBookAlreadyExistsHTTPException
+    return {
+        "status": "ok",
+        "data": data
+    }

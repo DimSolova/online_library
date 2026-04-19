@@ -14,6 +14,9 @@ class ObjectAlreadyExistsException(LibraryException):
 class UserAlreadyExistsException(LibraryException):
     detail = "email уже существует"
 
+class ISBNAlreadyExistsException(LibraryException):
+    detail = "Книга с таким ISBN уже существует"
+
 class InvalidCredentialsException(LibraryException):
     detail = "Неверный Логин или пароль"
 
@@ -31,14 +34,18 @@ class UserAlreadyExistsHTTPException(LibraryHTTPException):
     status_code = 409
     detail = "Пользователь с таким email существует"
 
+class ISBNBookAlreadyExistsHTTPException(LibraryHTTPException):
+    status_code = 409
+    detail = "Книга с таким ISBN уже существует"
+
 class InvalidCredentialsHTTPException(LibraryHTTPException):
     status_code = 401
     detail = "Неверный Логин или Пароль"
 
-class TokenNotFoundHTTPException(LibraryHTTPException):
-    status_code = 401
-    detail = "токен не найден"
-
 class InvalidTokenHTTPException(LibraryHTTPException):
     status_code = 401
     detail = "Неверный токен"
+
+class TokenNotFoundHTTPException(LibraryHTTPException):
+    status_code = 401
+    detail = "токен не найден"
