@@ -28,4 +28,4 @@ def get_current_user(token: str = Depends(get_token)):
 
 
 
-UserIdDep = Annotated[str, Depends(get_current_user)]
+UserIdDep = Annotated[dict, Depends(get_current_user)]

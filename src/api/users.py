@@ -31,14 +31,19 @@ async def login_user(
     response.set_cookie("access_token", token)
     return {
         "status": "success",
-        "access_token": token
+        "data": {"access_token": token}
     }
 
 @router.post("/logout")
 async def logout(response: Response):
     response.delete_cookie(key="access_token")
-    return {"status": "success"}
+    return {"status": "success",
+            "data": {"message": "Вы успешно вышли"}
+            }
 
 @router.get("/me", description="проверяет есть ли в куках jwt токен и возвращает пользователя")
 async def get_me(user: UserIdDep):
-    return user
+    return {
+        "status": "success",
+        "data": user
+    }
