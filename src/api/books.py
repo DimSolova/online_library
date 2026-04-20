@@ -34,6 +34,7 @@ async def add_book(
 
 @router.get("")
 async def get_books():
+    await BooksService().get_books()
     return {
         "status": "success",
         "data": "все книги"

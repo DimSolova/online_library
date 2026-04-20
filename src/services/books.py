@@ -31,3 +31,6 @@ class BooksService(BaseService):
         except ObjectAlreadyExistsException:
             raise ISBNAlreadyExistsException
         return res
+
+    async def get_books(self):
+        print("hello")
