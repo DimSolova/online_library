@@ -31,3 +31,10 @@ async def add_book(
         "status": "ok",
         "data": data
     }
+
+@router.get("")
+async def get_books():
+    return {
+        "status": "success",
+        "data": "все книги"
+            }
