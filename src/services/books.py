@@ -36,3 +36,7 @@ class BooksService(BaseService):
 
         books = await self.db.books.get_all()
         return books
+
+    async def delete_book(self, book_id: int):
+        await self.db.books.delete(id=book_id)
+        await self.db.commit()

@@ -39,3 +39,15 @@ async def add_book(
         "status": "ok",
         "data": data
     }
+
+@router.delete("/{book_id}")
+async def delete_book(
+        book_id: int,
+        db: DBDep
+):
+    await BooksService(db).delete_book(book_id)
+    return {
+        "status": "success",
+            "data": book_id,
+    }
+

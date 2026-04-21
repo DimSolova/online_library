@@ -2,7 +2,7 @@ import logging
 
 from asyncpg import UniqueViolationError
 from pydantic import BaseModel
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, delete
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -49,3 +49,10 @@ class BaseRepository:
         model = result.scalar_one()
         data = self.schema.model_validate(model)
         return data
+
+    async def delete(self, **filter):
+        delete_stmt = (
+            delete(self.model)
+            .filter_by(**filter)
+        )
+        await self.session.execute(delete_stmt)
