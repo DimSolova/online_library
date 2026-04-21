@@ -42,6 +42,11 @@ class BooksService(BaseService):
         await self.db.books.edit(data, id=book_id)
         await self.db.commit()
 
+    async def partially_edit_book(self, data, book_id):
+        book = await self.db.books.edit(data, exclude_unset=True,  id=book_id)
+        await self.db.commit()
+        return book
+
     async def delete_book(self, book_id: int):
         await self.db.books.delete(id=book_id)
         await self.db.commit()

@@ -50,13 +50,16 @@ class BaseRepository:
         data = self.schema.model_validate(model)
         return data
 
-    async def edit(self, data: BaseModel, **filer_by):
+    async def edit(self, data: BaseModel, exclude_unset: bool = False, **filer_by):
         update_stmt = (
             update(self.model)
             .filter_by(**filer_by)
-            .values(**data.model_dump())
+            .values(**data.model_dump(exclude_unset=exclude_unset))
+            .returning(self.model)
         )
-        await self.session.execute(update_stmt)
+        res = await self.session.execute(update_stmt)
+        model = res.scalar_one()
+        return self.schema.model_validate(model)
 
     async def delete(self, **filter):
         delete_stmt = (
