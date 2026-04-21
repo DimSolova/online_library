@@ -7,6 +7,14 @@ from src.services.books import BooksService
 
 router = APIRouter(prefix="/books", tags=["Книги"])
 
+@router.get("")
+async def get_books(db:DBDep):
+    books = await BooksService(db).get_books()
+    return {
+        "status": "success",
+        "data": books
+            }
+
 @router.post("")
 async def add_book(
         data: AddBookRequestDTO,
@@ -31,11 +39,3 @@ async def add_book(
         "status": "ok",
         "data": data
     }
-
-@router.get("")
-async def get_books():
-    await BooksService().get_books()
-    return {
-        "status": "success",
-        "data": "все книги"
-            }

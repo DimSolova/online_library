@@ -2,7 +2,7 @@ import logging
 
 from asyncpg import UniqueViolationError
 from pydantic import BaseModel
-from sqlalchemy import insert
+from sqlalchemy import insert, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -17,6 +17,14 @@ class BaseRepository:
 
     def __init__(self, session: AsyncSession):
         self.session = session
+
+    async def get_all(self):
+        query = (
+            select(self.model)
+        )
+        res = await self.session.execute(query)
+        data = res.scalars().all()
+        return [self.schema.model_validate(book) for book in data]
 
     async def add(self, data):
         data_dict = data.model_dump()

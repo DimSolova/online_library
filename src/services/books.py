@@ -33,4 +33,6 @@ class BooksService(BaseService):
         return res
 
     async def get_books(self):
-        print("hello")
+
+        books = await self.db.books.get_all()
+        return books
