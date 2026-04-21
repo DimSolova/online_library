@@ -1,8 +1,12 @@
 from typing import Annotated
 
-from fastapi import Depends, Request
+from fastapi import Depends, Request, HTTPException
+from starlette import status
+
+from src.constants.roles import UserRole
 from src.database import async_session_maker
-from src.exceptions import TokenNotFoundHTTPException, InvalidTokenException, InvalidTokenHTTPException
+from src.exceptions import TokenNotFoundHTTPException, InvalidTokenException, InvalidTokenHTTPException, \
+    RoleForbiddenHTTPException
 from src.schemas.users import UserTokenDTO
 from src.services.users import UserService
 from src.utils.db_manager import DBManager
@@ -36,11 +40,20 @@ def get_current_user(token: str = Depends(get_token)):
 UserIdDep = Annotated[UserTokenDTO, Depends(get_current_user)]
 
 
-def check_author(user: UserTokenDTO = Depends(get_current_user)):
-    #TODO Хард Код / Срочно переделать
-    if user.role not in [1, 2]:
-        print(user)
-    return user
+def require_role(allowed_roles: UserRole | list[UserRole]):
+    """Проверка роли пользователя"""
+    if isinstance(allowed_roles, UserRole):
+        allowed_roles = [allowed_roles]
+
+    allowed_ids = [role.value for role in allowed_roles]
+    required_role_names = [role.name for role in allowed_roles]
+
+    def role_checker(user: UserTokenDTO = Depends(get_current_user)) -> UserTokenDTO:
+        if user.role not in allowed_ids:
+            raise RoleForbiddenHTTPException(required_roles=required_role_names)
+        return user
+    return role_checker
 
 
-UserRoleDep = Annotated[UserTokenDTO, Depends(check_author)]
+AdminDep = Annotated[UserTokenDTO, Depends(require_role(UserRole.ADMIN))]
+AuthorOrAdminDep = Annotated[UserTokenDTO, Depends(require_role([UserRole.ADMIN, UserRole.AUTHOR]))]

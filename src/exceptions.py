@@ -49,3 +49,12 @@ class InvalidTokenHTTPException(LibraryHTTPException):
 class TokenNotFoundHTTPException(LibraryHTTPException):
     status_code = 401
     detail = "токен не найден"
+
+class RoleForbiddenHTTPException(LibraryHTTPException):
+    status_code = 403
+    detail = "Доступ запрещён"
+
+    def __init__(self, required_roles: list[str] | None = None):
+        if required_roles:
+            self.detail = f"Доступ запрещён. Требуется роль: {required_roles}"
+        super().__init__()   # важно вызвать родительский __init__

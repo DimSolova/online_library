@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from src.api.dependencies import UserRoleDep, DBDep
+from src.api.dependencies import DBDep, AuthorOrAdminDep
 from src.exceptions import ISBNAlreadyExistsException, ISBNBookAlreadyExistsHTTPException
 from src.schemas.books import AddBookRequestDTO, BookAdd, BookPATCH
 from src.services.books import BooksService
@@ -18,7 +18,7 @@ async def get_books(db:DBDep):
 @router.post("")
 async def add_book(
         data: AddBookRequestDTO,
-        user: UserRoleDep,
+        user: AuthorOrAdminDep,
         db: DBDep
 ):
     """Создаёт новую книгу в библиотеке.
