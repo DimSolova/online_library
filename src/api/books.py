@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 from src.api.dependencies import UserRoleDep, DBDep
 from src.exceptions import ISBNAlreadyExistsException, ISBNBookAlreadyExistsHTTPException
-from src.schemas.books import AddBookRequestDTO
+from src.schemas.books import AddBookRequestDTO, BookAdd
 from src.services.books import BooksService
 
 router = APIRouter(prefix="/books", tags=["Книги"])
@@ -37,6 +37,18 @@ async def add_book(
         raise ISBNBookAlreadyExistsHTTPException
     return {
         "status": "ok",
+        "data": data
+    }
+
+@router.put("/{book_id}")
+async def edit_book(
+        book_id: int,
+        data: BookAdd,
+        db: DBDep,
+):
+    await BooksService(db).edit_book(data, book_id)
+    return {
+        "status": "success",
         "data": data
     }
 

@@ -5,6 +5,11 @@ from src.services.base import BaseService
 
 class BooksService(BaseService):
 
+    async def get_books(self):
+
+        books = await self.db.books.get_all()
+        return books
+
     async def add_book(self,user, data):
         """Добавляет новую книгу в библиотеку.
 
@@ -32,10 +37,10 @@ class BooksService(BaseService):
             raise ISBNAlreadyExistsException
         return res
 
-    async def get_books(self):
-
-        books = await self.db.books.get_all()
-        return books
+    """функция для полного изменения данных"""
+    async def edit_book(self,data, book_id):
+        await self.db.books.edit(data, id=book_id)
+        await self.db.commit()
 
     async def delete_book(self, book_id: int):
         await self.db.books.delete(id=book_id)

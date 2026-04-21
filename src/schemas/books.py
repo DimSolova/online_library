@@ -22,6 +22,17 @@ class AddBookRequestDTO(BaseModel):
 class BookAdd(AddBookRequestDTO):
     added_by_id: int
 
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "title": "Идиот",
+                "description": "Книга про идиота",
+                "isbn": "9785389071278",
+                "author": "Ф.М. Достоевский",
+                "added_by_id": 1,
+            }
+        })
+
 class BookDTO(BaseModel):
     id: int
     title: str
