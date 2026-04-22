@@ -28,7 +28,6 @@ class BookPATCH(BaseModel):
     author: str | None = None
     isbn: str | None = None
     description: str | None = None
-    added_by_id: int | None = None
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -37,7 +36,6 @@ class BookPATCH(BaseModel):
                 "description": "Книга про идиота",
                 "isbn": "9785389071278",
                 "author": "Ф.М. Достоевский",
-                "added_by_id": 1,
             }
         })
 

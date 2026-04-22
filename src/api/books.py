@@ -22,15 +22,9 @@ async def add_book(
         user: AuthorOrAdminDep,
         db: DBDep
 ):
-    """Создаёт новую книгу в библиотеке.
-        Требует авторизации пользователя.
-        Args:
-            data: Данные новой книги
-            user: Текущий авторизованный пользователь
-            db: Сессия базы данных
-        Returns:
-            dict: {"status": "ok", "data": BookDTO}
-        Raises: ISBNBookAlreadyExistsHTTPException: Если ISBN уже существует
+    """Создается книга, Реализованна проверка на роль через Depends
+    Является ли пользователь автором или админом
+    Есть проверка на существующий ISBN
         """
     try:
         data = await BooksService(db).add_book(user, data)
@@ -48,26 +42,36 @@ async def edit_book(
         user: AuthorOrAdminDep,
         db: DBDep,
 ):
+    """Полное редактирование Книги
+    Проверет авторизацию пользователя
+    Есть вроверка на контретного автора через запрос к БД"""
     try:
-        await BooksService(db).edit_book(data,user, book_id)
+        editing_book = await BooksService(db).edit_book(data,user, book_id)
     except NotBookOwnerException:
         raise NotBookOwnerHTTPException
 
     return {
         "status": "success",
-        "data": data
+        "data": editing_book
     }
 
 @router.patch("/{book_id}")
 async def partially_edit_book(
         book_id: int,
         data: BookPATCH,
+        user: AuthorOrAdminDep,
         db: DBDep
 ):
-    editing_book = await BooksService(db).partially_edit_book(data, book_id)
+    """Частичное редактирование книги
+        проверяем JWT token
+        Есть проверка на конкретного автора через запрос к БД"""
+    try:
+        update_book = await BooksService(db).partially_edit_book(data,user, book_id)
+    except NotBookOwnerException:
+        raise NotBookOwnerHTTPException
     return {
         "status": "success",
-        "data": editing_book
+        "data": update_book
     }
 
 @router.delete("/{book_id}")
