@@ -1,8 +1,9 @@
 from fastapi import APIRouter
 
 from src.api.dependencies import DBDep, AuthorOrAdminDep
-from src.exceptions import ISBNAlreadyExistsException, ISBNBookAlreadyExistsHTTPException
-from src.schemas.books import AddBookRequestDTO, BookAdd, BookPATCH
+from src.exceptions import ISBNAlreadyExistsException, ISBNBookAlreadyExistsHTTPException, NotBookOwnerException, \
+    NotBookOwnerHTTPException
+from src.schemas.books import AddBookRequestDTO, BookPATCH
 from src.services.books import BooksService
 
 router = APIRouter(prefix="/books", tags=["Книги"])
@@ -43,10 +44,15 @@ async def add_book(
 @router.put("/{book_id}")
 async def edit_book(
         book_id: int,
-        data: BookAdd,
+        data: AddBookRequestDTO,
+        user: AuthorOrAdminDep,
         db: DBDep,
 ):
-    await BooksService(db).edit_book(data, book_id)
+    try:
+        await BooksService(db).edit_book(data,user, book_id)
+    except NotBookOwnerException:
+        raise NotBookOwnerHTTPException
+
     return {
         "status": "success",
         "data": data

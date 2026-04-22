@@ -1,5 +1,3 @@
-
-
 from fastapi import HTTPException
 
 class LibraryException(Exception):
@@ -22,6 +20,9 @@ class InvalidCredentialsException(LibraryException):
 
 class InvalidTokenException(LibraryException):
     detail = "Вы не предоставили токен"
+
+class NotBookOwnerException(LibraryException):
+    detail = "Вы не являетесь владельцем этой книги"
 
 """Исключения для FastAPI"""
 class LibraryHTTPException(HTTPException):
@@ -58,3 +59,8 @@ class RoleForbiddenHTTPException(LibraryHTTPException):
         if required_roles:
             self.detail = f"Доступ запрещён. Требуется роль: {required_roles}"
         super().__init__()   # важно вызвать родительский __init__
+
+class NotBookOwnerHTTPException(LibraryHTTPException):
+    """403 - Пользователь пытается редактировать/удалять не свою книгу"""
+    status_code = 403
+    detail = "Вы не являетесь владельцем этой книги"

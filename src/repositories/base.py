@@ -18,6 +18,15 @@ class BaseRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
+    async def get_one(self, **filter_by):
+        query = (
+            select(self.model)
+            .filter_by(**filter_by)
+        )
+        res = await self.session.execute(query)
+        model = res.scalar_one()
+        return self.schema.model_validate(model)
+
     async def get_all(self):
         query = (
             select(self.model)
@@ -47,8 +56,7 @@ class BaseRepository:
                     f"Неизвестная ошибка, не удалось добавить данные в БД {data}тип ошибки  {type(ex.__cause__)=}")
                 raise ex
         model = result.scalar_one()
-        data = self.schema.model_validate(model)
-        return data
+        return self.schema.model_validate(model)
 
     async def edit(self, data: BaseModel, exclude_unset: bool = False, **filer_by):
         update_stmt = (

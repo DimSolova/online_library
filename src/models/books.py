@@ -42,4 +42,4 @@ class BookOrm(Base):
 
     # здесь нужен блок коментарий
     def __repr__(self) -> str:
-        return f"<Book {self.id=} {self.title=} {self.author=} {self.isbn=}>"
+        return f"<Book {self.id=} {self.title=} {self.author=} {self.isbn=} {self.added_by_id=}>"

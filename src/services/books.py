@@ -1,5 +1,7 @@
-from src.exceptions import ObjectAlreadyExistsException, ISBNAlreadyExistsException
-from src.schemas.books import BookAdd
+from src.constants.roles import UserRole
+from src.exceptions import ObjectAlreadyExistsException, ISBNAlreadyExistsException, NotBookOwnerException
+from src.schemas.books import AddBookDTO, BookDTO, AddBookRequestDTO
+from src.schemas.users import UserTokenDTO
 from src.services.base import BaseService
 
 
@@ -23,7 +25,7 @@ class BooksService(BaseService):
                 Raises:
                     ISBNAlreadyExistsException: Если книга с таким ISBN уже существует
                 """
-        user_data = BookAdd(
+        user_data = AddBookDTO(
             title=data.title,
             description=data.description,
             isbn=data.isbn,
@@ -38,7 +40,14 @@ class BooksService(BaseService):
         return res
 
     """функция для полного изменения данных"""
-    async def edit_book(self,data, book_id):
+    async def edit_book(self,data: AddBookRequestDTO, user: UserTokenDTO, book_id: int):
+        """Если авторизован как админ то пропускаем  этот блок
+        Если автор то делаем запрос в БД на проверку автора"""
+        if user.role != UserRole.ADMIN:
+            book: BookDTO = await self.db.books.get_one(id=book_id)
+            if book.added_by_id != user.id:
+                raise NotBookOwnerException
+
         await self.db.books.edit(data, id=book_id)
         await self.db.commit()
 
