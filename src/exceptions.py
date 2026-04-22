@@ -18,6 +18,9 @@ class ISBNAlreadyExistsException(LibraryException):
 class InvalidCredentialsException(LibraryException):
     detail = "Неверный Логин или пароль"
 
+class BookNotFoundException(LibraryException):
+    detail = "Книга не найдена"
+
 class InvalidTokenException(LibraryException):
     detail = "Вы не предоставили токен"
 
@@ -46,6 +49,10 @@ class InvalidCredentialsHTTPException(LibraryHTTPException):
 class InvalidTokenHTTPException(LibraryHTTPException):
     status_code = 401
     detail = "Неверный токен"
+
+class BookNotFoundHTTPException(LibraryHTTPException):
+    status_code = 401
+    detail = "Книга не найдена"
 
 class TokenNotFoundHTTPException(LibraryHTTPException):
     status_code = 401

@@ -1,5 +1,6 @@
 from src.constants.roles import UserRole
-from src.exceptions import ObjectAlreadyExistsException, ISBNAlreadyExistsException, NotBookOwnerException
+from src.exceptions import ObjectAlreadyExistsException, ISBNAlreadyExistsException, NotBookOwnerException, \
+    BookNotFoundException
 from src.schemas.books import AddBookDTO, BookDTO, AddBookRequestDTO, BookPATCH
 from src.schemas.users import UserTokenDTO
 from src.services.base import BaseService
@@ -10,10 +11,13 @@ class BooksService(BaseService):
     async def check_author(self, user, book_id):
         """Если авторизован как админ, то пропускаем этот блок
             Если автор, то делаем запрос в БД на проверку автора"""
-        if user.role != UserRole.ADMIN:
-            book: BookDTO = await self.db.books.get_one(id=book_id)
-            if book.added_by_id != user.id:
-                raise NotBookOwnerException
+        if user.role == UserRole.ADMIN:
+            return
+        book: BookDTO = await self.db.books.get_one_or_none(id=book_id)
+        if book is None:
+            raise BookNotFoundException
+        if book.added_by_id != user.id:
+            raise NotBookOwnerException
 
     async def get_books(self):
 
@@ -49,8 +53,9 @@ class BooksService(BaseService):
 
     async def edit_book(self,data: AddBookRequestDTO, user: UserTokenDTO, book_id: int):
         await self.check_author(user, book_id)
-        await self.db.books.edit(data, id=book_id)
+        book = await self.db.books.edit(data, id=book_id)
         await self.db.commit()
+        return book
 
     async def partially_edit_book(self, data: BookPATCH,user: UserTokenDTO, book_id: int):
         """exclude_unset метод в pydantic, позволяет не записывать NULL в таблицу"""

@@ -2,11 +2,16 @@ from fastapi import APIRouter
 
 from src.api.dependencies import DBDep, AuthorOrAdminDep
 from src.exceptions import ISBNAlreadyExistsException, ISBNBookAlreadyExistsHTTPException, NotBookOwnerException, \
-    NotBookOwnerHTTPException
+    NotBookOwnerHTTPException, BookNotFoundException, BookNotFoundHTTPException
 from src.schemas.books import AddBookRequestDTO, BookPATCH
 from src.services.books import BooksService
 
 router = APIRouter(prefix="/books", tags=["Книги"])
+
+"""TODO 
+В Ручках PUT PATCH DELETE повторяется обработка исключений,Скорее всего стоит это как-то вынести в отдельное место
+Grok предложил сделать отдельную Depends на проверку этих ошибок
+"""
 
 @router.get("")
 async def get_books(db:DBDep):
@@ -49,6 +54,9 @@ async def edit_book(
         editing_book = await BooksService(db).edit_book(data,user, book_id)
     except NotBookOwnerException:
         raise NotBookOwnerHTTPException
+    except BookNotFoundException:
+        raise BookNotFoundHTTPException
+
 
     return {
         "status": "success",
@@ -69,6 +77,9 @@ async def partially_edit_book(
         update_book = await BooksService(db).partially_edit_book(data,user, book_id)
     except NotBookOwnerException:
         raise NotBookOwnerHTTPException
+    except BookNotFoundException:
+        raise BookNotFoundHTTPException
+
     return {
         "status": "success",
         "data": update_book
@@ -84,6 +95,8 @@ async def delete_book(
         await BooksService(db).delete_book(user, book_id)
     except NotBookOwnerException:
         raise NotBookOwnerHTTPException
+    except BookNotFoundException:
+        raise BookNotFoundHTTPException
     return {
         "status": "success",
             "data": f"книга с id:{book_id} удалена",

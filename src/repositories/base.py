@@ -27,6 +27,14 @@ class BaseRepository:
         model = res.scalar_one()
         return self.schema.model_validate(model)
 
+    async def get_one_or_none(self, **filter_by):
+        query = select(self.model).filter_by(**filter_by)
+        res = await self.session.execute(query)
+        model = res.scalar_one_or_none()
+        if model is None:
+            return None
+        return self.schema.model_validate(model)
+
     async def get_all(self):
         query = (
             select(self.model)
@@ -58,10 +66,10 @@ class BaseRepository:
         model = result.scalar_one()
         return self.schema.model_validate(model)
 
-    async def edit(self, data: BaseModel, exclude_unset: bool = False, **filer_by):
+    async def edit(self, data: BaseModel, exclude_unset: bool = False, **filter_by):
         update_stmt = (
             update(self.model)
-            .filter_by(**filer_by)
+            .filter_by(**filter_by)
             .values(**data.model_dump(exclude_unset=exclude_unset))
             .returning(self.model)
         )
