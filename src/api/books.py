@@ -77,11 +77,15 @@ async def partially_edit_book(
 @router.delete("/{book_id}")
 async def delete_book(
         book_id: int,
+        user: AuthorOrAdminDep,
         db: DBDep
 ):
-    await BooksService(db).delete_book(book_id)
+    try:
+        await BooksService(db).delete_book(user, book_id)
+    except NotBookOwnerException:
+        raise NotBookOwnerHTTPException
     return {
         "status": "success",
-            "data": book_id,
+            "data": f"книга с id:{book_id} удалена",
     }
 

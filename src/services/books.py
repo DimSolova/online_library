@@ -8,8 +8,8 @@ from src.services.base import BaseService
 class BooksService(BaseService):
 
     async def check_author(self, user, book_id):
-        """Если авторизован как админ то пропускаем  этот блок
-            Если автор то делаем запрос в БД на проверку автора"""
+        """Если авторизован как админ, то пропускаем этот блок
+            Если автор, то делаем запрос в БД на проверку автора"""
         if user.role != UserRole.ADMIN:
             book: BookDTO = await self.db.books.get_one(id=book_id)
             if book.added_by_id != user.id:
@@ -59,6 +59,7 @@ class BooksService(BaseService):
         await self.db.commit()
         return book
 
-    async def delete_book(self, book_id: int):
+    async def delete_book(self, user, book_id: int):
+        await self.check_author(user, book_id)
         await self.db.books.delete(id=book_id)
         await self.db.commit()
