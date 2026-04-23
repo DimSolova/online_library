@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.repositories.books import BookRepository
+from src.repositories.roles import RoleRepository
 from src.repositories.users import UserRepository
 
 
@@ -14,6 +15,7 @@ class DBManager:
 
         self.users = UserRepository(self.session)
         self.books = BookRepository(self.session)
+        self.roles = RoleRepository(self.session)
 
         return self
 

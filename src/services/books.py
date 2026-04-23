@@ -1,7 +1,7 @@
 from src.constants.roles import UserRole
 from src.exceptions import ObjectAlreadyExistsException, ISBNAlreadyExistsException, NotBookOwnerException, \
     BookNotFoundException
-from src.schemas.books import AddBookDTO, BookDTO, AddBookRequestDTO, BookPATCH
+from src.schemas.books import BookDTOAdd, BookDTO, BookAddRequestDTO, BookPATCHDTO
 from src.schemas.users import UserTokenDTO
 from src.services.base import BaseService
 
@@ -37,7 +37,7 @@ class BooksService(BaseService):
                 Raises:
                     ISBNAlreadyExistsException: Если книга с таким ISBN уже существует
                 """
-        user_data = AddBookDTO(
+        user_data = BookDTOAdd(
             title=data.title,
             description=data.description,
             isbn=data.isbn,
@@ -51,13 +51,13 @@ class BooksService(BaseService):
             raise ISBNAlreadyExistsException
         return res
 
-    async def edit_book(self,data: AddBookRequestDTO, user: UserTokenDTO, book_id: int):
+    async def edit_book(self, data: BookAddRequestDTO, user: UserTokenDTO, book_id: int):
         await self.check_author(user, book_id)
         book = await self.db.books.edit(data, id=book_id)
         await self.db.commit()
         return book
 
-    async def partially_edit_book(self, data: BookPATCH,user: UserTokenDTO, book_id: int):
+    async def partially_edit_book(self, data: BookPATCHDTO, user: UserTokenDTO, book_id: int):
         """exclude_unset метод в pydantic, позволяет не записывать NULL в таблицу"""
         await self.check_author(user, book_id)
         book = await self.db.books.edit(data, exclude_unset=True,  id=book_id)

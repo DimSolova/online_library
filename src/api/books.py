@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from src.api.dependencies import DBDep, AuthorOrAdminDep
 from src.exceptions import ISBNAlreadyExistsException, ISBNBookAlreadyExistsHTTPException, NotBookOwnerException, \
     NotBookOwnerHTTPException, BookNotFoundException, BookNotFoundHTTPException
-from src.schemas.books import AddBookRequestDTO, BookPATCH
+from src.schemas.books import BookAddRequestDTO, BookPATCHDTO
 from src.services.books import BooksService
 
 router = APIRouter(prefix="/books", tags=["Книги"])
@@ -23,7 +23,7 @@ async def get_books(db:DBDep):
 
 @router.post("")
 async def add_book(
-        data: AddBookRequestDTO,
+        data: BookAddRequestDTO,
         user: AuthorOrAdminDep,
         db: DBDep
 ):
@@ -43,7 +43,7 @@ async def add_book(
 @router.put("/{book_id}")
 async def edit_book(
         book_id: int,
-        data: AddBookRequestDTO,
+        data: BookAddRequestDTO,
         user: AuthorOrAdminDep,
         db: DBDep,
 ):
@@ -66,7 +66,7 @@ async def edit_book(
 @router.patch("/{book_id}")
 async def partially_edit_book(
         book_id: int,
-        data: BookPATCH,
+        data: BookPATCHDTO,
         user: AuthorOrAdminDep,
         db: DBDep
 ):

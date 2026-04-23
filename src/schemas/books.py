@@ -3,7 +3,7 @@ from datetime import datetime
 from pydantic import BaseModel, ConfigDict
 
 
-class AddBookRequestDTO(BaseModel):
+class BookAddRequestDTO(BaseModel):
     title: str
     description: str
     isbn: str
@@ -19,11 +19,11 @@ class AddBookRequestDTO(BaseModel):
             }
         })
 
-class AddBookDTO(AddBookRequestDTO):
+class BookDTOAdd(BookAddRequestDTO):
     added_by_id: int
 
 
-class BookPATCH(BaseModel):
+class BookPATCHDTO(BaseModel):
     title: str | None = None
     author: str | None = None
     isbn: str | None = None
