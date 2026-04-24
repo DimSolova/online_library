@@ -1,0 +1,5 @@
+[
+        {"name": "admin", "description": "Администратор"},
+        {"name": "author", "description": "Автор книг"},
+        {"name": "user", "description": "Обычный пользователь"}
+    ]
