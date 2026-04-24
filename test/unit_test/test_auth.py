@@ -13,12 +13,13 @@ def test_create_access_token():
 
 
 
-# async def test_register_user():
+# async def test_register_admin():
 #     data = UserAddDTO(
-#         username='user',
-#         email="user@exm.com",
-#         hashed_password="qwe",
-#         role_id=3
+#         username='admin',
+#         email="admin@exm.com",
+#         hashed_password="string",
+#         role_id=1
 #     )
 #     async with DBManager(session_factory=async_session_maker_null_pool) as db:
 #         user = await db.users.add(data)
+#         await db.commit()

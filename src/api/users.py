@@ -6,7 +6,7 @@ from src.exceptions import UserAlreadyExistsException, UserAlreadyExistsHTTPExce
 from src.schemas.users import UserAddRequestDTO, UserLoginDTO
 from src.services.users import UserService
 
-router = APIRouter(prefix='/users', tags=['Пользователи'])
+router = APIRouter(prefix='/auth', tags=['Пользователи'])
 
 @router.post('/register', status_code=status.HTTP_201_CREATED)
 async def register_user(db:DBDep, data:UserAddRequestDTO) -> dict:
