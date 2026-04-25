@@ -2,25 +2,25 @@
         {
             "username": "admin",
             "email": "admin@test.com",
-            "hashed_password": "admin123",
+            "password": "admin123",
             "role_id": 1
         },
         {
             "username": "author1",
             "email": "author1@test.com",
-            "hashed_password": "author123",
+            "password": "author123",
             "role_id": 2
         },
         {
             "username": "author2",
             "email": "author2@test.com",
-            "hashed_password": "author123",
+            "password": "author123",
             "role_id": 2
         },
         {
             "username": "testuser",
             "email": "user@test.com",
-            "hashed_password": "user123",
+            "password": "user123",
             "role_id": 3
         }
     ]
