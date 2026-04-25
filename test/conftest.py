@@ -2,6 +2,7 @@ import json
 
 import pytest
 
+from src.api.dependencies import get_db
 from src.config import setting
 from src.database import engine_null_pool, async_session_maker_null_pool
 from src.main import app
@@ -13,6 +14,11 @@ from src.utils.db_manager import DBManager
 
 from httpx import ASGITransport, AsyncClient
 
+async def get_db_null_pool():
+    async with DBManager(session_factory=async_session_maker_null_pool) as db:
+        yield db
+
+app.dependency_overrides[get_db] = get_db_null_pool
 """Фикстура на создание сессии, Она видна во всем pytest"""
 @pytest.fixture(scope="function")
 async def db():
@@ -68,7 +74,6 @@ async def setup_database(ac, check_test):
 """Фикстура Асинхронного клиента на регистрацию"""
 @pytest.fixture(scope="session", autouse=True)
 async def test_root(ac):
-
     response = await ac.post("/auth/register",
                              json={"username": "user",
                                    "email": "user@exm.com",
