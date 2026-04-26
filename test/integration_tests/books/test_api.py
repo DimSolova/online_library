@@ -2,7 +2,6 @@ import pytest
 
 from test.helpers.auth import login_as_author
 
-
 @pytest.mark.parametrize("user, title, description, isbn, author, status_code",[
     ("author1", "Идиот", "Книга про идиота", "9785389071278", "Ф.М. Достоевский", 200),
     ("author1", "Идиот", "Книга про идиота", "9785389071278", "Ф.М. Достоевский", 409),
