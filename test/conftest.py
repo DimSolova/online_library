@@ -71,13 +71,3 @@ async def setup_database(ac, check_test):
         await _db.commit()
 
 
-"""Фикстура Асинхронного клиента на регистрацию"""
-@pytest.fixture(scope="session", autouse=True)
-async def test_root(ac):
-    response = await ac.post("/auth/register",
-                             json={"username": "user",
-                                   "email": "user@exm.com",
-                                   "password": "string"}
-                             )
-    assert response.status_code == 201
-

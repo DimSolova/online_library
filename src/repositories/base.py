@@ -50,7 +50,7 @@ class BaseRepository:
             .values(**data_dict)
             .returning(self.model)
         )
-        print(add_stmt.compile(bind=engine, compile_kwargs={"literal_binds": True}))
+        # print(add_stmt.compile(bind=engine, compile_kwargs={"literal_binds": True}))
         try:
             result = await self.session.execute(add_stmt)
         except IntegrityError as ex:
