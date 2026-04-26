@@ -52,15 +52,15 @@ async def setup_database(ac, check_test):
 
     with open("test/mock_users_data.json", encoding="utf-8") as f:
         users_data = json.load(f)
-        users_schemas = []
-        for user in users_data:
-            hashed_password = UserService().get_password_hash(user["password"])
-            users_schemas.append(UserAddDTO(
-                username=user["username"],
-                email=user["email"],
-                hashed_password=hashed_password,
-                role_id=user["role_id"]
-            ))
+    users_schemas = []
+    for user in users_data:
+        hashed_password = UserService().get_password_hash(user["password"])
+        users_schemas.append(UserAddDTO(
+            username=user["username"],
+            email=user["email"],
+            hashed_password=hashed_password,
+            role_id=user["role_id"]
+        ))
 
     async with DBManager(session_factory=async_session_maker_null_pool) as _db:
         for role in roles_schemas:
