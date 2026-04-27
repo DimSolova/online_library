@@ -18,6 +18,9 @@ class ISBNAlreadyExistsException(LibraryException):
 class InvalidCredentialsException(LibraryException):
     detail = "Неверный Логин или пароль"
 
+class ObjectNotFoundException(LibraryException):
+    detail = "Объект не найден"
+
 class BookNotFoundException(LibraryException):
     detail = "Книга не найдена"
 

@@ -1,6 +1,6 @@
 from src.constants.roles import UserRole
 from src.exceptions import ObjectAlreadyExistsException, ISBNAlreadyExistsException, NotBookOwnerException, \
-    BookNotFoundException
+    BookNotFoundException, ObjectNotFoundException
 from src.schemas.books import BookDTOAdd, BookDTO, BookAddRequestDTO, BookPATCHDTO
 from src.schemas.users import UserTokenDTO
 from src.services.base import BaseService
@@ -18,6 +18,13 @@ class BooksService(BaseService):
             raise BookNotFoundException
         if book.added_by_id != user.id:
             raise NotBookOwnerException
+
+    async def get_book(self, book_id: int):
+        try:
+            book = await self.db.books.get_one(id=book_id)
+        except ObjectNotFoundException:
+            raise BookNotFoundException
+        return book
 
     async def get_books(
             self,

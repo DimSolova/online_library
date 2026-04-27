@@ -3,11 +3,11 @@ import logging
 from asyncpg import UniqueViolationError
 from pydantic import BaseModel
 from sqlalchemy import insert, select, delete, update
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import engine
-from src.exceptions import ObjectAlreadyExistsException
+from src.exceptions import ObjectAlreadyExistsException, ObjectNotFoundException
 from src.models.base import Base
 
 
@@ -23,8 +23,11 @@ class BaseRepository:
             select(self.model)
             .filter_by(**filter_by)
         )
-        res = await self.session.execute(query)
-        model = res.scalar_one()
+        try:
+            res = await self.session.execute(query)
+            model = res.scalar_one()
+        except NoResultFound:
+            raise ObjectNotFoundException
         return self.schema.model_validate(model)
 
     async def get_one_or_none(self, **filter_by):

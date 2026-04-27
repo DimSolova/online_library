@@ -2,7 +2,8 @@ from fastapi import APIRouter, Query
 
 from src.api.dependencies import DBDep, AuthorOrAdminDep, PaginationDep
 from src.exceptions import ISBNAlreadyExistsException, ISBNBookAlreadyExistsHTTPException, NotBookOwnerException, \
-    NotBookOwnerHTTPException, BookNotFoundException, BookNotFoundHTTPException, ObjectAlreadyExistsException
+    NotBookOwnerHTTPException, BookNotFoundException, BookNotFoundHTTPException, ObjectAlreadyExistsException, \
+    ObjectNotFoundException
 from src.schemas.books import BookAddRequestDTO, BookPATCHDTO
 from src.services.books import BooksService
 
@@ -12,6 +13,21 @@ router = APIRouter(prefix="/books", tags=["Книги"])
 В Ручках PUT PATCH DELETE повторяется обработка исключений,Скорее всего стоит это как-то вынести в отдельное место
 Grok предложил сделать отдельную Depends на проверку этих ошибок
 """
+
+@router.get("/{book_id}")
+async def get_book(
+        db:DBDep,
+        book_id: int
+):
+    try:
+        book = await BooksService(db).get_book(book_id)
+    except BookNotFoundException:
+        raise BookNotFoundHTTPException
+    return {
+        "status": "success",
+        "data": book
+    }
+
 
 @router.get("")
 async def get_books(
