@@ -67,13 +67,27 @@ class BaseRepository:
         return self.schema.model_validate(model)
 
     async def edit(self, data: BaseModel, exclude_unset: bool = False, **filter_by):
+        """В API service и repository повторяется одна и таже проверка ошибки
+                Добавил проверку ошибки точно такую же как и в add очень много повтора получается,
+                 это 100% надо куда-то вынести"""
         update_stmt = (
             update(self.model)
             .filter_by(**filter_by)
             .values(**data.model_dump(exclude_unset=exclude_unset))
             .returning(self.model)
         )
-        res = await self.session.execute(update_stmt)
+        try:
+            res = await self.session.execute(update_stmt)
+        except IntegrityError as ex:
+            logging.error(
+                f"Не удалось добавить данные в БД, {data} тип ошибки {type(ex.orig.__cause__)=}"
+            )
+            if isinstance(ex.orig.__cause__, UniqueViolationError):
+                raise ObjectAlreadyExistsException from ex
+            else:
+                logging.error(
+                    f"Неизвестная ошибка, не удалось добавить данные в БД {data}тип ошибки  {type(ex.__cause__)=}")
+                raise ex
         model = res.scalar_one()
         return self.schema.model_validate(model)
 

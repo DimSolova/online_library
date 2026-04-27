@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 from src.api.dependencies import DBDep, AuthorOrAdminDep
 from src.exceptions import ISBNAlreadyExistsException, ISBNBookAlreadyExistsHTTPException, NotBookOwnerException, \
-    NotBookOwnerHTTPException, BookNotFoundException, BookNotFoundHTTPException
+    NotBookOwnerHTTPException, BookNotFoundException, BookNotFoundHTTPException, ObjectAlreadyExistsException
 from src.schemas.books import BookAddRequestDTO, BookPATCHDTO
 from src.services.books import BooksService
 
@@ -56,6 +56,8 @@ async def edit_book(
         raise NotBookOwnerHTTPException
     except BookNotFoundException:
         raise BookNotFoundHTTPException
+    except ISBNAlreadyExistsException:
+        raise ISBNBookAlreadyExistsHTTPException
 
 
     return {

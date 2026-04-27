@@ -53,8 +53,14 @@ class BooksService(BaseService):
 
     async def edit_book(self, data: BookAddRequestDTO, user: UserTokenDTO, book_id: int):
         await self.check_author(user, book_id)
-        book = await self.db.books.edit(data, id=book_id)
-        await self.db.commit()
+        """В API service и repository повторяется одна и таже проверка ошибки 
+        Добавил проверку ошибки точно такую же как и в add очень много повтора получается,
+         это 100% надо куда-то вынести"""
+        try:
+            book = await self.db.books.edit(data, id=book_id)
+            await self.db.commit()
+        except ObjectAlreadyExistsException:
+            raise ISBNAlreadyExistsException
         return book
 
     async def partially_edit_book(self, data: BookPATCHDTO, user: UserTokenDTO, book_id: int):
