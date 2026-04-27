@@ -1,6 +1,7 @@
 from typing import Annotated
 
-from fastapi import Depends, Request, HTTPException
+from fastapi import Depends, Request, HTTPException, Query
+from pydantic import BaseModel
 from starlette import status
 
 from src.constants.roles import UserRole
@@ -57,3 +58,9 @@ def require_role(allowed_roles: UserRole | list[UserRole]):
 
 AdminDep = Annotated[UserTokenDTO, Depends(require_role(UserRole.ADMIN))]
 AuthorOrAdminDep = Annotated[UserTokenDTO, Depends(require_role([UserRole.ADMIN, UserRole.AUTHOR]))]
+
+class PaginationParams(BaseModel):
+    page: Annotated[int, Query(1, ge=1)]
+    per_page: Annotated[int | None, Query(None, ge=1, lt=30)]
+
+PaginationDep = Annotated[PaginationParams, Depends()]
