@@ -91,3 +91,19 @@ async def test_partially_edit_book(user, book_id, payload, status_code, ac, db):
                                       json=payload)
 
     assert response.status_code == status_code
+
+@pytest.mark.parametrize("user, book_id, status_code",[
+    # автор не может удалить чужую книгу
+    (UserRole.AUTHOR2.value, 1, 403),
+    #автор удаляет свою книгу
+    (UserRole.AUTHOR1.value, 1, 200),
+     #автор удаляет несуществующую книгу
+    (UserRole.AUTHOR1.value, 1, 401),
+
+])
+async def test_delete_book(user, book_id, status_code, ac,db):
+    resp_author = await login_as_author(ac, user)
+    assert resp_author
+
+    response = await resp_author.delete(f"/books/{book_id}")
+    assert response.status_code == status_code
