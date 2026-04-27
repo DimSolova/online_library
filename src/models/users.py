@@ -32,7 +32,6 @@ class UserOrm(Base):
     # server_default="now()"→ если запись создаётся напрямую в базе (например через INSERT), база сама поставит текущее время
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),   #формат записи
-        default=datetime.utcnow,  # Python-side default
         server_default="now()",    # Database-side default
         nullable=False
     )

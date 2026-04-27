@@ -1,15 +1,16 @@
 import pytest
-from test.constants import TestUser
+
+from src.constants.test_constants import UserRole
 from test.helpers.auth import login_as_author
 
 @pytest.mark.parametrize("user, title, description, isbn, author, status_code",[
-    (TestUser.AUTHOR1.value, "Идиот", "Книга про идиота", "9785389071271", "Ф.М. Достоевский", 200),
-    (TestUser.AUTHOR1.value, "Преступление и наказание", "Книга про идиота", "9785389071272", "Ф.М. Достоевский", 200),
-    (TestUser.AUTHOR1.value, "Двойник", "Книга про идиота", "9785389071273", "Ф.М. Достоевский", 200),
-    (TestUser.AUTHOR1.value, "Игрок", "Книга про идиота", "9785389071274", "Ф.М. Достоевский", 200),
-    (TestUser.AUTHOR1.value, "Кэри", "Книга про идиота", "9785389071275", "С. Кинг", 200),
-    (TestUser.AUTHOR1.value, "Идиот", "Книга про идиота", "9785389071271", "Ф.М. Достоевский", 409),
-    (TestUser.AUTHOR2.value, "Идиот", "Книга про идиота", "9735389071278", "Ф.М. Достоевский", 200),
+    (UserRole.AUTHOR1.value, "Идиот", "Книга про идиота", "9785389071271", "Ф.М. Достоевский", 200),
+    (UserRole.AUTHOR1.value, "Преступление и наказание", "Книга про идиота", "9785389071272", "Ф.М. Достоевский", 200),
+    (UserRole.AUTHOR1.value, "Двойник", "Книга про идиота", "9785389071273", "Ф.М. Достоевский", 200),
+    (UserRole.AUTHOR1.value, "Игрок", "Книга про идиота", "9785389071274", "Ф.М. Достоевский", 200),
+    (UserRole.AUTHOR1.value, "Кэри", "Книга про идиота", "9785389071275", "С. Кинг", 200),
+    (UserRole.AUTHOR1.value, "Идиот", "Книга про идиота", "9785389071271", "Ф.М. Достоевский", 409),
+    (UserRole.AUTHOR2.value, "Идиот", "Книга про идиота", "9735389071278", "Ф.М. Достоевский", 200),
 ])
 async def test_add_book(user, title, description, isbn, author, status_code, ac):
     resp_author = await login_as_author(ac, user)
@@ -27,11 +28,11 @@ async def test_add_book(user, title, description, isbn, author, status_code, ac)
 
 @pytest.mark.parametrize("user, book_id, title, description, isbn, author, status_code",[
     # 1. Владелец может редактировать свою книгу
-    (TestUser.AUTHOR1.value, 1, "Умный", "Книга про идиота", "9785389071271", "Ф.М. Достоевский", 200),
+    (UserRole.AUTHOR1.value, 1, "Умный", "Книга про идиота", "9785389071271", "Ф.М. Достоевский", 200),
     # 2. Другой автор НЕ может редактировать чужую книгу
-    (TestUser.AUTHOR2.value, 1, "Умный", "Книга про идиота", "9785389071271", "Ф.М. Достоевский", 403),
+    (UserRole.AUTHOR2.value, 1, "Умный", "Книга про идиота", "9785389071271", "Ф.М. Достоевский", 403),
     # 3. Нельзя установить ISBN, который уже существует у другой книги
-    (TestUser.AUTHOR1.value, 2, "Умный", "Книга умного", "9785389071271", "Ф.М. Достоевский", 409),
+    (UserRole.AUTHOR1.value, 2, "Умный", "Книга умного", "9785389071271", "Ф.М. Достоевский", 409),
 ],
      ids=[
          "author1_edits_own_book → 200 OK",
@@ -60,19 +61,19 @@ async def test_edit_book(user, book_id, title, description, isbn, author, status
     "user, book_id, payload, status_code",
     [
         # 1. Автор редактирует свою книгу — только одно поле (классическое частичное обновление)
-        (TestUser.AUTHOR1.value, 1, {"title": "Новое название книги"}, 200),
+        (UserRole.AUTHOR1.value, 1, {"title": "Новое название книги"}, 200),
 
         # 2. Автор редактирует свою книгу — несколько полей
-        (TestUser.AUTHOR1.value, 1, {
+        (UserRole.AUTHOR1.value, 1, {
             "title": "Ещё одно новое название",
             "description": "Новое описание книги"
         }, 200),
 
         # 3. Другой автор НЕ может редактировать чужую книгу
-        (TestUser.AUTHOR2.value, 1, {"title": "Попытка изменить чужую книгу"}, 403),
+        (UserRole.AUTHOR2.value, 1, {"title": "Попытка изменить чужую книгу"}, 403),
 
         # 4. Попытка установить уже существующий ISBN (даже при частичном обновлении)
-        (TestUser.AUTHOR1.value, 2, {"isbn": "9785389071271"}, 409),
+        (UserRole.AUTHOR1.value, 2, {"isbn": "9785389071271"}, 409),
     ],
     ids=[
         "author1_partial_edit_title_only → 200",

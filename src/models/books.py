@@ -36,7 +36,6 @@ class BookOrm(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),     ##формат записи
         server_default="now()",      ## значение по умолчанию при создании
-        onupdate=datetime.utcnow,    # автоматически обновляется при любом UPDATE
         nullable=False
     )
 
