@@ -9,9 +9,22 @@ class BookRepository(BaseRepository):
     model = BookOrm
     schema = BookDTO
 
-    async def get_filtered(self, limit, offset):
+    async def get_filtered(
+            self,
+            limit,
+            offset,
+            title,
+            author,
+    ):
         query = (
             select(self.model)
+        )
+        if title:
+            query = query.filter(BookOrm.title.contains(title))
+        if author:
+            query = query.filter(BookOrm.author.contains(author))
+        query = (
+            query
             .limit(limit)
             .offset(offset)
         )

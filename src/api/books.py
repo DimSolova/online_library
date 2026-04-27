@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 
 from src.api.dependencies import DBDep, AuthorOrAdminDep, PaginationDep
 from src.exceptions import ISBNAlreadyExistsException, ISBNBookAlreadyExistsHTTPException, NotBookOwnerException, \
@@ -16,9 +16,11 @@ Grok предложил сделать отдельную Depends на пров�
 @router.get("")
 async def get_books(
         pagination: PaginationDep,
-        db:DBDep
+        db:DBDep,
+        title: str | None = Query(None, description="Название книги"),
+        author: str | None = Query(None, description="Автор книги"),
 ):
-    books = await BooksService(db).get_books(pagination)
+    books = await BooksService(db).get_books(pagination, title, author)
     return {
         "status": "success",
         "data": books

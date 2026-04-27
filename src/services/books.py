@@ -19,11 +19,21 @@ class BooksService(BaseService):
         if book.added_by_id != user.id:
             raise NotBookOwnerException
 
-    async def get_books(self, pagination):
+    async def get_books(
+            self,
+            pagination,
+            title: str | None,
+            author: str | None
+    ):
 
         page = pagination.page
         per_page = pagination.per_page or 5
-        books = await self.db.books.get_filtered(limit=per_page , offset=per_page * (page - 1))
+        books = await self.db.books.get_filtered(
+            limit=per_page ,
+            offset=per_page * (page - 1),
+            title=title,
+            author=author
+        )
         return books
 
     async def add_book(self,user, data):
