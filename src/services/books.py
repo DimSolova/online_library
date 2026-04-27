@@ -66,8 +66,11 @@ class BooksService(BaseService):
     async def partially_edit_book(self, data: BookPATCHDTO, user: UserTokenDTO, book_id: int):
         """exclude_unset метод в pydantic, позволяет не записывать NULL в таблицу"""
         await self.check_author(user, book_id)
-        book = await self.db.books.edit(data, exclude_unset=True,  id=book_id)
-        await self.db.commit()
+        try:
+            book = await self.db.books.edit(data, exclude_unset=True,  id=book_id)
+            await self.db.commit()
+        except ObjectAlreadyExistsException:
+            raise ISBNAlreadyExistsException
         return book
 
     async def delete_book(self, user, book_id: int):

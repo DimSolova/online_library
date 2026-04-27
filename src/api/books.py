@@ -81,6 +81,8 @@ async def partially_edit_book(
         raise NotBookOwnerHTTPException
     except BookNotFoundException:
         raise BookNotFoundHTTPException
+    except ISBNAlreadyExistsException:
+        raise ISBNBookAlreadyExistsHTTPException
 
     return {
         "status": "success",
