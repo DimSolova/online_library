@@ -107,3 +107,22 @@ async def test_delete_book(user, book_id, status_code, ac,db):
 
     response = await resp_author.delete(f"/books/{book_id}")
     assert response.status_code == status_code
+
+@pytest.mark.parametrize("book_id, status_code", [
+    (1, 401),
+    (2, 200)
+])
+async def test_get_book(book_id, status_code, ac):
+    response = await ac.get(f"books/{book_id}")
+    assert response.status_code == status_code
+
+@pytest.mark.parametrize("params",[
+    {"title": "К", "author": "Кинг"},
+    {"author": "Д"},
+    {"title": "Пре","author": "Д"},
+    {},
+])
+async def test_get_books(params, ac):
+    response = await ac.get("/books",
+                            params=params)
+    assert response.status_code == 200

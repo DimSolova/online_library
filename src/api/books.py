@@ -2,8 +2,7 @@ from fastapi import APIRouter, Query
 
 from src.api.dependencies import DBDep, AuthorOrAdminDep, PaginationDep
 from src.exceptions import ISBNAlreadyExistsException, ISBNBookAlreadyExistsHTTPException, NotBookOwnerException, \
-    NotBookOwnerHTTPException, BookNotFoundException, BookNotFoundHTTPException, ObjectAlreadyExistsException, \
-    ObjectNotFoundException
+    NotBookOwnerHTTPException, BookNotFoundException, BookNotFoundHTTPException
 from src.schemas.books import BookAddRequestDTO, BookPATCHDTO
 from src.services.books import BooksService
 
