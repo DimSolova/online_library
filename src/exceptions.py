@@ -24,6 +24,9 @@ class ObjectNotFoundException(LibraryException):
 class BookNotFoundException(LibraryException):
     detail = "Книга не найдена"
 
+class UserNotFoundException(LibraryException):
+    detail = "Пользователь не найдена"
+
 class InvalidTokenException(LibraryException):
     detail = "Вы не предоставили токен"
 
@@ -56,6 +59,10 @@ class InvalidTokenHTTPException(LibraryHTTPException):
 class BookNotFoundHTTPException(LibraryHTTPException):
     status_code = 401
     detail = "Книга не найдена"
+
+class UserNotFoundHTTPException(LibraryHTTPException):
+    status_code = 401
+    detail = "Пользователь не найден"
 
 class TokenNotFoundHTTPException(LibraryHTTPException):
     status_code = 401

@@ -91,7 +91,10 @@ class BaseRepository:
                 logging.error(
                     f"Неизвестная ошибка, не удалось добавить данные в БД {data}тип ошибки  {type(ex.__cause__)=}")
                 raise ex
-        model = res.scalar_one()
+        try:
+            model = res.scalar_one()
+        except NoResultFound:
+            raise ObjectNotFoundException
         return self.schema.model_validate(model)
 
     async def delete(self, **filter):

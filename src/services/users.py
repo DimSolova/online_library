@@ -9,7 +9,8 @@ from jwt import PyJWTError
 from pwdlib import PasswordHash
 
 from src.config import setting
-from src.exceptions import ObjectAlreadyExistsException, UserAlreadyExistsException, InvalidCredentialsException, InvalidTokenException
+from src.exceptions import ObjectAlreadyExistsException, UserAlreadyExistsException, InvalidCredentialsException, \
+    InvalidTokenException, ObjectNotFoundException, UserNotFoundException
 from src.schemas.users import UserAddDTO
 from src.services.base import BaseService
 
@@ -72,4 +73,13 @@ class UserService(BaseService):
         }
         token = self.create_access_token(data)
         return token
+
+    async def change_role(self, user_id, data):
+        try:
+            user = await self.db.users.edit(data,id=user_id)
+        except ObjectNotFoundException:
+            raise UserNotFoundException
+        await self.db.commit()
+        return user
+
 

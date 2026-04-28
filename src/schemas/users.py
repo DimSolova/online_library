@@ -51,3 +51,9 @@ class UserDTO(BaseModel):
 
 class UserWithHashDTO(UserDTO):
     hashed_password: str
+
+class ChangeRoleRequest(BaseModel):
+    role_id: int
+
+class ChangeRole(ChangeRoleRequest):
+    id: int

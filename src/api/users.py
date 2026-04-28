@@ -1,9 +1,9 @@
 from fastapi import APIRouter, status, Response
 
-from src.api.dependencies import DBDep, UserIdDep
-from src.exceptions import UserAlreadyExistsException, UserAlreadyExistsHTTPException,\
-    InvalidCredentialsException, InvalidCredentialsHTTPException
-from src.schemas.users import UserAddRequestDTO, UserLoginDTO
+from src.api.dependencies import DBDep, UserIdDep, AdminDep
+from src.exceptions import UserAlreadyExistsException, UserAlreadyExistsHTTPException, \
+    InvalidCredentialsException, InvalidCredentialsHTTPException, UserNotFoundException, UserNotFoundHTTPException
+from src.schemas.users import UserAddRequestDTO, UserLoginDTO, ChangeRoleRequest
 from src.services.users import UserService
 
 router = APIRouter(prefix='/auth', tags=['Пользователи'])
@@ -50,4 +50,21 @@ async def get_me(user: UserIdDep):
     return {
         "status": "success",
         "data": user
+    }
+
+
+@router.patch("/user_id")
+async def change_role(
+        user_id: int,
+        data: ChangeRoleRequest,
+        admin:AdminDep,
+        db:DBDep
+):
+    try:
+        user = await UserService(db).change_role(user_id,data)
+    except UserNotFoundException:
+        raise UserNotFoundHTTPException
+    return {
+        "status": "success",
+        "data": f"у пользователя c id:{user.id} изменена роль на {user.role_id}",
     }
