@@ -54,7 +54,7 @@ async def get_me(user: UserIdDep):
     }
 
 
-@router.patch("/user_id")
+@router.patch("/{user_id}")
 async def change_role(
         user_id: int,
         data: ChangeRoleRequest,
