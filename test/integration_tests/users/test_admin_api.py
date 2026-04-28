@@ -13,9 +13,9 @@ from test.helpers.auth import login_as_author
     # не существует роли
     ("admin", 55, 5, 401),
 ])
-async def test_change_role(user, user_id, role_id, status_code,ac):
+async def test_change_user_role(user, user_id, role_id, status_code,ac):
     resp_admin = await login_as_author(ac, user)
-    response = await resp_admin.patch(f"/auth/{user_id}",
+    response = await resp_admin.patch(f"/auth/{user_id}/role",
                            json={
                                "role_id": role_id
                            }

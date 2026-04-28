@@ -85,4 +85,12 @@ class UserService(BaseService):
         await self.db.commit()
         return user
 
+    async def change_active(self, user_id, data):
+        try:
+            user = await self.db.users.edit(data, id=user_id)
+        except ObjectNotFoundException:
+            raise UserNotFoundException
+        await self.db.commit()
+        return user
+
 

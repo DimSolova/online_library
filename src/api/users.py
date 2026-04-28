@@ -4,7 +4,7 @@ from src.api.dependencies import DBDep, UserIdDep, AdminDep
 from src.exceptions import UserAlreadyExistsException, UserAlreadyExistsHTTPException, \
     InvalidCredentialsException, InvalidCredentialsHTTPException, UserNotFoundException, UserNotFoundHTTPException, \
     InvalidRoleException, InvalidRoleHTTPException
-from src.schemas.users import UserAddRequestDTO, UserLoginDTO, ChangeRoleRequest
+from src.schemas.users import UserAddRequestDTO, UserLoginDTO, ChangeRoleRequest, ChangeActiveRequest
 from src.services.users import UserService
 
 router = APIRouter(prefix='/auth', tags=['Пользователи'])
@@ -54,8 +54,8 @@ async def get_me(user: UserIdDep):
     }
 
 
-@router.patch("/{user_id}")
-async def change_role(
+@router.patch("/{user_id}/role")
+async def change_user_role(
         user_id: int,
         data: ChangeRoleRequest,
         admin:AdminDep,
@@ -70,4 +70,20 @@ async def change_role(
     return {
         "status": "success",
         "data": f"у пользователя c id:{user.id} изменена роль на {user.role_id}",
+    }
+
+@router.patch("/{user_id}/active")
+async def change_user_active(
+        user_id: int,
+        data: ChangeActiveRequest,
+        admin:AdminDep,
+        db:DBDep
+):
+    try:
+        user = await UserService(db).change_active(user_id, data)
+    except UserNotFoundException:
+        raise UserNotFoundHTTPException
+    return {
+        "status": "success",
+        "data": f"у пользователя c id:{user_id} is_active {user.is_active}",
     }

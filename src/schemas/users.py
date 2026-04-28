@@ -55,5 +55,5 @@ class UserWithHashDTO(UserDTO):
 class ChangeRoleRequest(BaseModel):
     role_id: int
 
-class ChangeRole(ChangeRoleRequest):
-    id: int
+class ChangeActiveRequest(BaseModel):
+    is_active: bool
