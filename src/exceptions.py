@@ -59,7 +59,7 @@ class BookNotFoundHTTPException(LibraryHTTPException):
 
 class TokenNotFoundHTTPException(LibraryHTTPException):
     status_code = 401
-    detail = "токен не найден"
+    detail = "Вы не авторизованы"
 
 class RoleForbiddenHTTPException(LibraryHTTPException):
     status_code = 403
@@ -74,3 +74,7 @@ class NotBookOwnerHTTPException(LibraryHTTPException):
     """403 - Пользователь пытается редактировать/удалять не свою книгу"""
     status_code = 403
     detail = "Вы не являетесь владельцем этой книги"
+
+class BlockActiveHTTPException(LibraryHTTPException):
+    status_code = 403
+    detail = "Вы заблокированы"

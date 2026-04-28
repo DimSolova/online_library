@@ -33,6 +33,7 @@ class UserTokenDTO(BaseModel):
     username: str
     email: EmailStr
     role: int
+    is_active:bool
     exp:int
 
 class UserDTO(BaseModel):

@@ -1,13 +1,12 @@
 from typing import Annotated
 
-from fastapi import Depends, Request, HTTPException, Query
+from fastapi import Depends, Request, Query
 from pydantic import BaseModel
-from starlette import status
 
 from src.constants.roles import UserRole
 from src.database import async_session_maker
 from src.exceptions import TokenNotFoundHTTPException, InvalidTokenException, InvalidTokenHTTPException, \
-    RoleForbiddenHTTPException
+    RoleForbiddenHTTPException, BlockActiveHTTPException
 from src.schemas.users import UserTokenDTO
 from src.services.users import UserService
 from src.utils.db_manager import DBManager
@@ -29,11 +28,14 @@ def get_current_user(token: str = Depends(get_token)):
         data = UserService().decode_token(token)
     except InvalidTokenException:
         raise InvalidTokenHTTPException
+    if not data["is_active"]:
+        raise BlockActiveHTTPException
     user = UserTokenDTO(
         id=data['id'],
         username=data['username'],
         email=data['email'],
         role=data['role'],
+        is_active=data['is_active'],
         exp=data['exp']
     )
     return user
