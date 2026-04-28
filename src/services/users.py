@@ -63,12 +63,12 @@ class UserService(BaseService):
         if not user or not self.verify_password(data.password, user.hashed_password):
             raise InvalidCredentialsException
 
-
         data = {
             "id":user.id,
             "username": user.username,
             "email": user.email,
-            "role": user.role_id
+            "role": user.role_id,
+            "is_active": user.is_active
         }
         token = self.create_access_token(data)
         return token
