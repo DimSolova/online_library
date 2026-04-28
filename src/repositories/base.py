@@ -1,13 +1,13 @@
 import logging
 
-from asyncpg import UniqueViolationError
+from asyncpg import UniqueViolationError, ForeignKeyViolationError
 from pydantic import BaseModel
 from sqlalchemy import insert, select, delete, update
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import engine
-from src.exceptions import ObjectAlreadyExistsException, ObjectNotFoundException
+from src.exceptions import ObjectAlreadyExistsException, ObjectNotFoundException, ForeignKeyException
 from src.models.base import Base
 
 
@@ -87,6 +87,8 @@ class BaseRepository:
             )
             if isinstance(ex.orig.__cause__, UniqueViolationError):
                 raise ObjectAlreadyExistsException from ex
+            elif isinstance(ex.orig.__cause__, ForeignKeyViolationError):
+                raise ForeignKeyException from ex
             else:
                 logging.error(
                     f"Неизвестная ошибка, не удалось добавить данные в БД {data}тип ошибки  {type(ex.__cause__)=}")

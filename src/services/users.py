@@ -10,7 +10,7 @@ from pwdlib import PasswordHash
 
 from src.config import setting
 from src.exceptions import ObjectAlreadyExistsException, UserAlreadyExistsException, InvalidCredentialsException, \
-    InvalidTokenException, ObjectNotFoundException, UserNotFoundException
+    InvalidTokenException, ObjectNotFoundException, UserNotFoundException, ForeignKeyException, InvalidRoleException
 from src.schemas.users import UserAddDTO
 from src.services.base import BaseService
 
@@ -79,6 +79,9 @@ class UserService(BaseService):
             user = await self.db.users.edit(data,id=user_id)
         except ObjectNotFoundException:
             raise UserNotFoundException
+        except ForeignKeyException:
+            raise InvalidRoleException
+
         await self.db.commit()
         return user
 

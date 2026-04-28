@@ -18,6 +18,12 @@ class ISBNAlreadyExistsException(LibraryException):
 class InvalidCredentialsException(LibraryException):
     detail = "Неверный Логин или пароль"
 
+class ForeignKeyException(LibraryException):
+    detail = "Ошибка ввода"
+
+class InvalidRoleException(LibraryException):
+    detail = "Неверная роль"
+
 class ObjectNotFoundException(LibraryException):
     detail = "Объект не найден"
 
@@ -85,3 +91,7 @@ class NotBookOwnerHTTPException(LibraryHTTPException):
 class BlockActiveHTTPException(LibraryHTTPException):
     status_code = 403
     detail = "Вы заблокированы"
+
+class InvalidRoleHTTPException(LibraryHTTPException):
+    status_code = 401
+    detail = "Неверная роль"

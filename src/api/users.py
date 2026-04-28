@@ -2,7 +2,8 @@ from fastapi import APIRouter, status, Response
 
 from src.api.dependencies import DBDep, UserIdDep, AdminDep
 from src.exceptions import UserAlreadyExistsException, UserAlreadyExistsHTTPException, \
-    InvalidCredentialsException, InvalidCredentialsHTTPException, UserNotFoundException, UserNotFoundHTTPException
+    InvalidCredentialsException, InvalidCredentialsHTTPException, UserNotFoundException, UserNotFoundHTTPException, \
+    InvalidRoleException, InvalidRoleHTTPException
 from src.schemas.users import UserAddRequestDTO, UserLoginDTO, ChangeRoleRequest
 from src.services.users import UserService
 
@@ -64,6 +65,8 @@ async def change_role(
         user = await UserService(db).change_role(user_id,data)
     except UserNotFoundException:
         raise UserNotFoundHTTPException
+    except InvalidRoleException:
+        raise InvalidRoleHTTPException
     return {
         "status": "success",
         "data": f"у пользователя c id:{user.id} изменена роль на {user.role_id}",
