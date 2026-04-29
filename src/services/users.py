@@ -20,7 +20,7 @@ from src.exceptions import (
     UserAlreadyExistsException,
     UserNotFoundException,
 )
-from src.schemas.users import UserAddDTO
+from src.schemas.users import UserAddDTO, UserDTO, ChangeRoleRequest, ChangeActiveRequest
 from src.services.base import BaseService
 
 # PasswordHash с рекомендованными настройками — он будет использоваться для хэширования и проверки паролей.
@@ -80,9 +80,9 @@ class UserService(BaseService):
         token = self.create_access_token(data)
         return token
 
-    async def change_role(self, user_id, data):
+    async def change_role(self, user_id: int, data: ChangeRoleRequest) -> UserDTO:
         try:
-            user = await self.db.users.edit(data, id=user_id)
+            user: UserDTO = await self.db.users.edit(data, id=user_id)
         except ObjectNotFoundException:
             raise UserNotFoundException
         except ForeignKeyException:
@@ -91,9 +91,9 @@ class UserService(BaseService):
         await self.db.commit()
         return user
 
-    async def change_active(self, user_id, data):
+    async def change_active(self, user_id: int, data: ChangeActiveRequest) -> UserDTO:
         try:
-            user = await self.db.users.edit(data, id=user_id)
+            user: UserDTO = await self.db.users.edit(data, id=user_id)
         except ObjectNotFoundException:
             raise UserNotFoundException
         await self.db.commit()

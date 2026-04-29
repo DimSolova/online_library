@@ -15,7 +15,7 @@ from src.schemas.users import (
     ChangeActiveRequest,
     ChangeRoleRequest,
     UserAddRequestDTO,
-    UserLoginDTO,
+    UserLoginDTO, UserDTO,
 )
 from src.services.users import UserService
 
@@ -54,9 +54,9 @@ async def get_me(user: UserIdDep):
 
 
 @router.patch("/{user_id}/role")
-async def change_user_role(user_id: int, data: ChangeRoleRequest, admin: AdminDep, db: DBDep):
+async def change_user_role(user_id: int, data: ChangeRoleRequest, admin: AdminDep, db: DBDep) -> dict:
     try:
-        user = await UserService(db).change_role(user_id, data)
+        user: UserDTO = await UserService(db).change_role(user_id, data)
     except UserNotFoundException:
         raise UserNotFoundHTTPException
     except InvalidRoleException:
@@ -68,9 +68,9 @@ async def change_user_role(user_id: int, data: ChangeRoleRequest, admin: AdminDe
 
 
 @router.patch("/{user_id}/active")
-async def change_user_active(user_id: int, data: ChangeActiveRequest, admin: AdminDep, db: DBDep):
+async def change_user_active(user_id: int, data: ChangeActiveRequest, admin: AdminDep, db: DBDep) -> dict:
     try:
-        user = await UserService(db).change_active(user_id, data)
+        user: UserDTO = await UserService(db).change_active(user_id, data)
     except UserNotFoundException:
         raise UserNotFoundHTTPException
     return {

@@ -47,10 +47,10 @@ async def add_book(data: BookAddRequestDTO, user: AuthorOrAdminDep, db: DBDep):
     Есть проверка на существующий ISBN
     """
     try:
-        data = await BooksService(db).add_book(user, data)
+        new_book = await BooksService(db).add_book(user, data)
     except ISBNAlreadyExistsException:
         raise ISBNBookAlreadyExistsHTTPException
-    return {"status": "ok", "data": data}
+    return {"status": "ok", "data": new_book}
 
 
 @router.put("/{book_id}")

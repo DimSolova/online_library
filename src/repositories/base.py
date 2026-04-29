@@ -16,8 +16,8 @@ from src.repositories.mapper.base import DataMapper
 
 
 class BaseRepository:
-    model: Base = None
-    mapper: DataMapper = None
+    model: type[Base]
+    mapper: type[DataMapper]
 
     def __init__(self, session: AsyncSession):
         self.session = session
