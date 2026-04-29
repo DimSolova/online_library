@@ -47,18 +47,14 @@ async def logout(user: UserIdDep, response: Response):
     return {"status": "success", "data": {"message": "Вы успешно вышли"}}
 
 
-@router.get(
-    "/me", description="проверяет есть ли в куках jwt токен и возвращает пользователя"
-)
+@router.get("/me", description="проверяет есть ли в куках jwt токен и возвращает пользователя")
 async def get_me(user: UserIdDep):
     print(user)
     return {"status": "success", "data": user}
 
 
 @router.patch("/{user_id}/role")
-async def change_user_role(
-    user_id: int, data: ChangeRoleRequest, admin: AdminDep, db: DBDep
-):
+async def change_user_role(user_id: int, data: ChangeRoleRequest, admin: AdminDep, db: DBDep):
     try:
         user = await UserService(db).change_role(user_id, data)
     except UserNotFoundException:
@@ -72,9 +68,7 @@ async def change_user_role(
 
 
 @router.patch("/{user_id}/active")
-async def change_user_active(
-    user_id: int, data: ChangeActiveRequest, admin: AdminDep, db: DBDep
-):
+async def change_user_active(user_id: int, data: ChangeActiveRequest, admin: AdminDep, db: DBDep):
     try:
         user = await UserService(db).change_active(user_id, data)
     except UserNotFoundException:

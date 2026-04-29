@@ -15,11 +15,7 @@ class UserLoginDTO(BaseModel):
     email: EmailStr
     password: str
 
-    model_config = ConfigDict(
-        json_schema_extra={
-            "example": {"email": "user@example.com", "password": "string"}
-        }
-    )
+    model_config = ConfigDict(json_schema_extra={"example": {"email": "user@example.com", "password": "string"}})
 
 
 class UserAddDTO(BaseModel):

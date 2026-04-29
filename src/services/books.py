@@ -66,11 +66,9 @@ class BooksService(BaseService):
             raise ISBNAlreadyExistsException
         return res
 
-    async def edit_book(
-        self, data: BookAddRequestDTO, user: UserTokenDTO, book_id: int
-    ):
+    async def edit_book(self, data: BookAddRequestDTO, user: UserTokenDTO, book_id: int):
         await self.check_author(user, book_id)
-        """В API service и repository повторяется одна и таже проверка ошибки 
+        """В API service и repository повторяется одна и таже проверка ошибки
         Добавил проверку ошибки точно такую же как и в add очень много повтора получается,
          это 100% надо куда-то вынести"""
         try:
@@ -80,9 +78,7 @@ class BooksService(BaseService):
             raise ISBNAlreadyExistsException
         return book
 
-    async def partially_edit_book(
-        self, data: BookPATCHDTO, user: UserTokenDTO, book_id: int
-    ):
+    async def partially_edit_book(self, data: BookPATCHDTO, user: UserTokenDTO, book_id: int):
         """exclude_unset метод в pydantic, позволяет не записывать NULL в таблицу"""
         await self.check_author(user, book_id)
         try:

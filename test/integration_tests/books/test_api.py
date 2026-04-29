@@ -121,9 +121,7 @@ async def test_add_book(user, title, description, isbn, author, status_code, ac)
         "author1_tries_to_set_existing_isbn → 409 Conflict",
     ],
 )
-async def test_edit_book(
-    user, book_id, title, description, isbn, author, status_code, ac, db
-):
+async def test_edit_book(user, book_id, title, description, isbn, author, status_code, ac, db):
     resp_author = await login_as_author(ac, user)
     assert resp_author
 

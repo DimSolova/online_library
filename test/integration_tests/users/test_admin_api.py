@@ -21,9 +21,7 @@ from test.helpers.auth import login_as_author
 )
 async def test_change_user_role(user, user_id, role_id, status_code, ac, db):
     resp_admin = await login_as_author(ac, user)
-    response = await resp_admin.patch(
-        f"/auth/{user_id}/role", json={"role_id": role_id}
-    )
+    response = await resp_admin.patch(f"/auth/{user_id}/role", json={"role_id": role_id})
     assert response.status_code == status_code
     if status_code != 200:
         return
@@ -51,9 +49,7 @@ async def test_change_user_role(user, user_id, role_id, status_code, ac, db):
 )
 async def test_change_user_active(user, user_id, is_active, status_code, ac, db):
     resp_admin = await login_as_author(ac, user)
-    response = await resp_admin.patch(
-        f"/auth/{user_id}/active", json={"is_active": is_active}
-    )
+    response = await resp_admin.patch(f"/auth/{user_id}/active", json={"is_active": is_active})
     assert response.status_code == status_code
     if status_code != 200:
         return

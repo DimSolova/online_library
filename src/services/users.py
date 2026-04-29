@@ -30,13 +30,9 @@ password_hash = PasswordHash.recommended()
 class UserService(BaseService):
     def create_access_token(self, data: dict):
         to_encode = data.copy()
-        expire = datetime.now(UTC) + timedelta(
-            minutes=setting.ACCESS_TOKEN_EXPIRE_MINUTES
-        )
+        expire = datetime.now(UTC) + timedelta(minutes=setting.ACCESS_TOKEN_EXPIRE_MINUTES)
         to_encode.update({"exp": expire})
-        encoded_jwt = jwt.encode(
-            to_encode, setting.SECRET_KEY, algorithm=setting.ALGORITHM
-        )
+        encoded_jwt = jwt.encode(to_encode, setting.SECRET_KEY, algorithm=setting.ALGORITHM)
         return encoded_jwt
 
     def get_password_hash(self, password: str) -> str:

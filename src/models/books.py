@@ -22,9 +22,7 @@ class BookOrm(Base):
     # Если хочешь связать книгу с пользователем (например, кто добавил книгу в библиотеку)
     # Сейчас ты назвал поле author_id — это может ввести в заблуждение, потому что author — это уже строка с именем автора книги.
     # Лучше назвать added_by_id или owner_id
-    added_by_id: Mapped[int | None] = mapped_column(
-        Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True
-    )
+    added_by_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),  ##формат записи

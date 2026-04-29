@@ -14,7 +14,7 @@ from src.services.books import BooksService
 
 router = APIRouter(prefix="/books", tags=["Книги"])
 
-"""TODO 
+"""TODO
 В Ручках PUT PATCH DELETE повторяется обработка исключений,Скорее всего стоит это как-то вынести в отдельное место
 Grok предложил сделать отдельную Depends на проверку этих ошибок
 """
@@ -76,9 +76,7 @@ async def edit_book(
 
 
 @router.patch("/{book_id}")
-async def partially_edit_book(
-    book_id: int, data: BookPATCHDTO, user: AuthorOrAdminDep, db: DBDep
-):
+async def partially_edit_book(book_id: int, data: BookPATCHDTO, user: AuthorOrAdminDep, db: DBDep):
     """Частичное редактирование книги
     проверяем JWT token
     Есть проверка на конкретного автора через запрос к БД"""

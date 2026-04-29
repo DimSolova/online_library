@@ -13,9 +13,7 @@ async def login_as_author(ac: AsyncClient, username: str):
     if not author:
         raise ValueError(f"Пользователь {username} не найден в mock_users_data.json")
 
-    response = await ac.post(
-        "/auth/login", json={"email": author["email"], "password": author["password"]}
-    )
+    response = await ac.post("/auth/login", json={"email": author["email"], "password": author["password"]})
     assert response.status_code == 200, f"Не удалось залогиниться как {username}"
     assert "access_token" in ac.cookies, f"Куки access_token не появился для {username}"
 

@@ -70,9 +70,7 @@ def require_role(allowed_roles: UserRole | list[UserRole]):
 
 
 AdminDep = Annotated[UserTokenDTO, Depends(require_role(UserRole.ADMIN))]
-AuthorOrAdminDep = Annotated[
-    UserTokenDTO, Depends(require_role([UserRole.ADMIN, UserRole.AUTHOR]))
-]
+AuthorOrAdminDep = Annotated[UserTokenDTO, Depends(require_role([UserRole.ADMIN, UserRole.AUTHOR]))]
 
 
 class PaginationParams(BaseModel):
