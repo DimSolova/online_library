@@ -1,9 +1,9 @@
 from src.models import RoleOrm
 from src.repositories.base import BaseRepository
-from src.schemas.roles import RoleDTO
+from src.repositories.mapper.mapper import RoleDataMapper
 
 
 class RoleRepository(BaseRepository):
     model = RoleOrm
-    schema = RoleDTO
+    mapper = RoleDataMapper
 

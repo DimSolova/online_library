@@ -3,12 +3,13 @@ from sqlalchemy import select
 
 from src.models import UserOrm
 from src.repositories.base import BaseRepository
-from src.schemas.users import UserDTO, UserWithHashDTO
+from src.repositories.mapper.mapper import UserDataMapper
+from src.schemas.users import UserWithHashDTO
 
 
 class UserRepository(BaseRepository):
     model = UserOrm
-    schema = UserDTO
+    mapper = UserDataMapper
 
     async def get_user_with_hashed_password(self, email: EmailStr):
         query = (

@@ -9,11 +9,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.database import engine
 from src.exceptions import ObjectAlreadyExistsException, ObjectNotFoundException, ForeignKeyException
 from src.models.base import Base
+from src.repositories.mapper.base import DataMapper
 
 
 class BaseRepository:
-    model: Base
-    schema: BaseModel
+    model: Base = None
+    mapper: DataMapper = None
 
     def __init__(self, session: AsyncSession):
         self.session = session
@@ -28,7 +29,7 @@ class BaseRepository:
             model = res.scalar_one()
         except NoResultFound:
             raise ObjectNotFoundException
-        return self.schema.model_validate(model)
+        return self.mapper.map_to_domain_entity(model)
 
     async def get_one_or_none(self, **filter_by):
         query = select(self.model).filter_by(**filter_by)
@@ -36,7 +37,7 @@ class BaseRepository:
         model = res.scalar_one_or_none()
         if model is None:
             return None
-        return self.schema.model_validate(model)
+        return self.mapper.map_to_domain_entity(model)
 
     async def get_all(self):
         query = (
@@ -44,7 +45,7 @@ class BaseRepository:
         )
         res = await self.session.execute(query)
         data = res.scalars().all()
-        return [self.schema.model_validate(book) for book in data]
+        return [self.mapper.map_to_domain_entity(book) for book in data]
 
     async def add(self, data):
         data_dict = data.model_dump()
@@ -67,7 +68,7 @@ class BaseRepository:
                     f"Неизвестная ошибка, не удалось добавить данные в БД {data}тип ошибки  {type(ex.__cause__)=}")
                 raise ex
         model = result.scalar_one()
-        return self.schema.model_validate(model)
+        return self.mapper.map_to_domain_entity(model)
 
     async def edit(self, data: BaseModel, exclude_unset: bool = False, **filter_by):
         """В API service и repository повторяется одна и таже проверка ошибки
@@ -97,7 +98,7 @@ class BaseRepository:
             model = res.scalar_one()
         except NoResultFound:
             raise ObjectNotFoundException
-        return self.schema.model_validate(model)
+        return self.mapper.map_to_domain_entity(model)
 
     async def delete(self, **filter):
         delete_stmt = (

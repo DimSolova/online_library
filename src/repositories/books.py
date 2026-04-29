@@ -2,12 +2,12 @@ from sqlalchemy import select
 
 from src.models import BookOrm
 from src.repositories.base import BaseRepository
-from src.schemas.books import BookDTO
+from src.repositories.mapper.mapper import BookDataMapper
 
 
 class BookRepository(BaseRepository):
     model = BookOrm
-    schema = BookDTO
+    mapper = BookDataMapper
 
     async def get_filtered(
             self,
@@ -30,4 +30,4 @@ class BookRepository(BaseRepository):
         )
         res = await self.session.execute(query)
         model = res.scalars().all()
-        return [self.schema.model_validate(book) for book in model]
+        return [self.mapper.map_to_domain_entity(book) for book in model]
