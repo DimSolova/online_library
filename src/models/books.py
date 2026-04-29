@@ -1,5 +1,6 @@
 from datetime import datetime
-from sqlalchemy import String, Integer, ForeignKey, DateTime, Text
+
+from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.models import Base  # твой базовый класс

@@ -1,0 +1,28 @@
+[project]
+name = "online_library"
+version = "0.1.0"
+requires-python = ">=3.11"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E",   # ошибки pycodestyle
+    "F",   # pyflakes
+    "I",   # isort (сортировка импортов)
+    "W",   # предупреждения pycodestyle
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear (полезные проверки)
+    "C4",  # comprehensions
+    "SIM", # упрощения
+    "RUF", # правила самого Ruff
+]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"

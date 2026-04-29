@@ -1,18 +1,17 @@
 import json
 
 import pytest
+from httpx import ASGITransport, AsyncClient
 
 from src.api.dependencies import get_db
 from src.config import setting
-from src.database import engine_null_pool, async_session_maker_null_pool
+from src.database import async_session_maker_null_pool, engine_null_pool
 from src.main import app
 from src.models import *
 from src.schemas.roles import RoleAddDTO
 from src.schemas.users import UserAddDTO
 from src.services.users import UserService
 from src.utils.db_manager import DBManager
-
-from httpx import ASGITransport, AsyncClient
 
 
 async def get_db_null_pool():

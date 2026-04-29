@@ -1,21 +1,21 @@
-from fastapi import APIRouter, status, Response
+from fastapi import APIRouter, Response, status
 
-from src.api.dependencies import DBDep, UserIdDep, AdminDep
+from src.api.dependencies import AdminDep, DBDep, UserIdDep
 from src.exceptions import (
-    UserAlreadyExistsException,
-    UserAlreadyExistsHTTPException,
     InvalidCredentialsException,
     InvalidCredentialsHTTPException,
-    UserNotFoundException,
-    UserNotFoundHTTPException,
     InvalidRoleException,
     InvalidRoleHTTPException,
+    UserAlreadyExistsException,
+    UserAlreadyExistsHTTPException,
+    UserNotFoundException,
+    UserNotFoundHTTPException,
 )
 from src.schemas.users import (
+    ChangeActiveRequest,
+    ChangeRoleRequest,
     UserAddRequestDTO,
     UserLoginDTO,
-    ChangeRoleRequest,
-    ChangeActiveRequest,
 )
 from src.services.users import UserService
 

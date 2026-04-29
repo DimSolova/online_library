@@ -1,16 +1,16 @@
 from typing import Annotated
 
-from fastapi import Depends, Request, Query
+from fastapi import Depends, Query, Request
 from pydantic import BaseModel
 
 from src.constants.roles import UserRole
 from src.database import async_session_maker
 from src.exceptions import (
-    TokenNotFoundHTTPException,
+    BlockActiveHTTPException,
     InvalidTokenException,
     InvalidTokenHTTPException,
     RoleForbiddenHTTPException,
-    BlockActiveHTTPException,
+    TokenNotFoundHTTPException,
 )
 from src.schemas.users import UserTokenDTO
 from src.services.users import UserService

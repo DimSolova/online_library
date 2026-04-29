@@ -1,6 +1,6 @@
-from datetime import date, datetime
+from datetime import datetime
 
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr
 
 
 class UserAddRequestDTO(BaseModel):

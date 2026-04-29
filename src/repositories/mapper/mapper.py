@@ -1,4 +1,4 @@
-from src.models import UserOrm, BookOrm, RoleOrm
+from src.models import BookOrm, RoleOrm, UserOrm
 from src.repositories.mapper.base import DataMapper
 from src.schemas.books import BookDTO
 from src.schemas.roles import RoleDTO

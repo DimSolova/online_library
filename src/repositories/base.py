@@ -1,16 +1,15 @@
 import logging
 
-from asyncpg import UniqueViolationError, ForeignKeyViolationError
+from asyncpg import ForeignKeyViolationError, UniqueViolationError
 from pydantic import BaseModel
-from sqlalchemy import insert, select, delete, update
+from sqlalchemy import delete, insert, select, update
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database import engine
 from src.exceptions import (
+    ForeignKeyException,
     ObjectAlreadyExistsException,
     ObjectNotFoundException,
-    ForeignKeyException,
 )
 from src.models.base import Base
 from src.repositories.mapper.base import DataMapper

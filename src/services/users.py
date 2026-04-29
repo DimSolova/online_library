@@ -3,7 +3,7 @@
 Содержит всю бизнес-логику, связанную с User.
 """
 
-from datetime import timedelta, datetime, timezone
+from datetime import UTC, datetime, timedelta
 
 import jwt
 from jwt import PyJWTError
@@ -11,14 +11,14 @@ from pwdlib import PasswordHash
 
 from src.config import setting
 from src.exceptions import (
-    ObjectAlreadyExistsException,
-    UserAlreadyExistsException,
-    InvalidCredentialsException,
-    InvalidTokenException,
-    ObjectNotFoundException,
-    UserNotFoundException,
     ForeignKeyException,
+    InvalidCredentialsException,
     InvalidRoleException,
+    InvalidTokenException,
+    ObjectAlreadyExistsException,
+    ObjectNotFoundException,
+    UserAlreadyExistsException,
+    UserNotFoundException,
 )
 from src.schemas.users import UserAddDTO
 from src.services.base import BaseService
@@ -30,7 +30,7 @@ password_hash = PasswordHash.recommended()
 class UserService(BaseService):
     def create_access_token(self, data: dict):
         to_encode = data.copy()
-        expire = datetime.now(timezone.utc) + timedelta(
+        expire = datetime.now(UTC) + timedelta(
             minutes=setting.ACCESS_TOKEN_EXPIRE_MINUTES
         )
         to_encode.update({"exp": expire})
