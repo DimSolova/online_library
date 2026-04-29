@@ -5,23 +5,32 @@ from pydantic import BaseModel
 
 from src.constants.roles import UserRole
 from src.database import async_session_maker
-from src.exceptions import TokenNotFoundHTTPException, InvalidTokenException, InvalidTokenHTTPException, \
-    RoleForbiddenHTTPException, BlockActiveHTTPException
+from src.exceptions import (
+    TokenNotFoundHTTPException,
+    InvalidTokenException,
+    InvalidTokenHTTPException,
+    RoleForbiddenHTTPException,
+    BlockActiveHTTPException,
+)
 from src.schemas.users import UserTokenDTO
 from src.services.users import UserService
 from src.utils.db_manager import DBManager
+
 
 async def get_db():
     async with DBManager(session_factory=async_session_maker) as db:
         yield db
 
+
 DBDep = Annotated[DBManager, Depends(get_db)]
+
 
 def get_token(request: Request):
     token = request.cookies.get("access_token", None)
     if not token:
         raise TokenNotFoundHTTPException
     return token
+
 
 def get_current_user(token: str = Depends(get_token)):
     try:
@@ -31,14 +40,15 @@ def get_current_user(token: str = Depends(get_token)):
     if not data["is_active"]:
         raise BlockActiveHTTPException
     user = UserTokenDTO(
-        id=data['id'],
-        username=data['username'],
-        email=data['email'],
-        role=data['role'],
-        is_active=data['is_active'],
-        exp=data['exp']
+        id=data["id"],
+        username=data["username"],
+        email=data["email"],
+        role=data["role"],
+        is_active=data["is_active"],
+        exp=data["exp"],
     )
     return user
+
 
 UserIdDep = Annotated[UserTokenDTO, Depends(get_current_user)]
 
@@ -55,14 +65,19 @@ def require_role(allowed_roles: UserRole | list[UserRole]):
         if user.role not in allowed_ids:
             raise RoleForbiddenHTTPException(required_roles=required_role_names)
         return user
+
     return role_checker
 
 
 AdminDep = Annotated[UserTokenDTO, Depends(require_role(UserRole.ADMIN))]
-AuthorOrAdminDep = Annotated[UserTokenDTO, Depends(require_role([UserRole.ADMIN, UserRole.AUTHOR]))]
+AuthorOrAdminDep = Annotated[
+    UserTokenDTO, Depends(require_role([UserRole.ADMIN, UserRole.AUTHOR]))
+]
+
 
 class PaginationParams(BaseModel):
     page: Annotated[int, Query(1, ge=1)]
     per_page: Annotated[int | None, Query(None, ge=1, lt=30)]
+
 
 PaginationDep = Annotated[PaginationParams, Depends()]

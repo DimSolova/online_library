@@ -11,10 +11,7 @@ class UserRepository(BaseRepository):
     mapper = UserDataMapper
 
     async def get_user_with_hashed_password(self, email: EmailStr):
-        query = (
-            select(self.model)
-            .filter_by(email=email)
-        )
+        query = select(self.model).filter_by(email=email)
         res = await self.session.execute(query)
         model = res.scalars().one_or_none()
         if not model:

@@ -6,4 +6,3 @@ from src.repositories.mapper.mapper import RoleDataMapper
 class RoleRepository(BaseRepository):
     model = RoleOrm
     mapper = RoleDataMapper
-

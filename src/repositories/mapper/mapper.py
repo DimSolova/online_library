@@ -9,15 +9,17 @@ class UserDataMapper(DataMapper):
     db_model = UserOrm
     schema = UserDTO
 
+
 class UserHashDataMapper(DataMapper):
     db_model = UserOrm
     schema = UserWithHashDTO
+
 
 class BookDataMapper(DataMapper):
     db_model = BookOrm
     schema = BookDTO
 
+
 class RoleDataMapper(DataMapper):
     db_model = RoleOrm
     schema = RoleDTO
-

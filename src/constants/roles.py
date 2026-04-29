@@ -4,6 +4,7 @@ from enum import IntEnum
 class UserRole(IntEnum):
     """Роли пользователей из таблицы roles
     Эти числа берутся из БД когда в ней роли уже созданы"""
+
     ADMIN = 1
     AUTHOR = 2
     USER = 3

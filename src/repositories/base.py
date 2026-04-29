@@ -7,7 +7,11 @@ from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import engine
-from src.exceptions import ObjectAlreadyExistsException, ObjectNotFoundException, ForeignKeyException
+from src.exceptions import (
+    ObjectAlreadyExistsException,
+    ObjectNotFoundException,
+    ForeignKeyException,
+)
 from src.models.base import Base
 from src.repositories.mapper.base import DataMapper
 
@@ -20,10 +24,7 @@ class BaseRepository:
         self.session = session
 
     async def get_one(self, **filter_by):
-        query = (
-            select(self.model)
-            .filter_by(**filter_by)
-        )
+        query = select(self.model).filter_by(**filter_by)
         try:
             res = await self.session.execute(query)
             model = res.scalar_one()
@@ -40,20 +41,14 @@ class BaseRepository:
         return self.mapper.map_to_domain_entity(model)
 
     async def get_all(self):
-        query = (
-            select(self.model)
-        )
+        query = select(self.model)
         res = await self.session.execute(query)
         data = res.scalars().all()
         return [self.mapper.map_to_domain_entity(book) for book in data]
 
     async def add(self, data):
         data_dict = data.model_dump()
-        add_stmt = (
-            insert(self.model)
-            .values(**data_dict)
-            .returning(self.model)
-        )
+        add_stmt = insert(self.model).values(**data_dict).returning(self.model)
         # print(add_stmt.compile(bind=engine, compile_kwargs={"literal_binds": True}))
         try:
             result = await self.session.execute(add_stmt)
@@ -65,15 +60,16 @@ class BaseRepository:
                 raise ObjectAlreadyExistsException from ex
             else:
                 logging.error(
-                    f"Неизвестная ошибка, не удалось добавить данные в БД {data}тип ошибки  {type(ex.__cause__)=}")
+                    f"Неизвестная ошибка, не удалось добавить данные в БД {data}тип ошибки  {type(ex.__cause__)=}"
+                )
                 raise ex
         model = result.scalar_one()
         return self.mapper.map_to_domain_entity(model)
 
     async def edit(self, data: BaseModel, exclude_unset: bool = False, **filter_by):
         """В API service и repository повторяется одна и таже проверка ошибки
-                Добавил проверку ошибки точно такую же как и в add очень много повтора получается,
-                 это 100% надо куда-то вынести"""
+        Добавил проверку ошибки точно такую же как и в add очень много повтора получается,
+         это 100% надо куда-то вынести"""
         update_stmt = (
             update(self.model)
             .filter_by(**filter_by)
@@ -92,7 +88,8 @@ class BaseRepository:
                 raise ForeignKeyException from ex
             else:
                 logging.error(
-                    f"Неизвестная ошибка, не удалось добавить данные в БД {data}тип ошибки  {type(ex.__cause__)=}")
+                    f"Неизвестная ошибка, не удалось добавить данные в БД {data}тип ошибки  {type(ex.__cause__)=}"
+                )
                 raise ex
         try:
             model = res.scalar_one()
@@ -101,8 +98,5 @@ class BaseRepository:
         return self.mapper.map_to_domain_entity(model)
 
     async def delete(self, **filter):
-        delete_stmt = (
-            delete(self.model)
-            .filter_by(**filter)
-        )
+        delete_stmt = delete(self.model).filter_by(**filter)
         await self.session.execute(delete_stmt)

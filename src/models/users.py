@@ -21,9 +21,9 @@ class UserOrm(Base):
     # server_default="true" → значение по умолчанию прямо в базе данных (на случай, если запись создаётся не через SQLAlchemy)
     is_active: Mapped[bool] = mapped_column(
         Boolean,
-        default=True,     # значение по умолчанию в Python-коде
+        default=True,  # значение по умолчанию в Python-коде
         server_default="true",  # значение по умолчанию на уровне PostgreSQL
-        nullable = False
+        nullable=False,
     )
 
     # created_at — дата и время создания пользователя
@@ -31,19 +31,19 @@ class UserOrm(Base):
     # default=datetime.utcnow→ если мы создаём объект в Python, автоматически подставит текущее время
     # server_default="now()"→ если запись создаётся напрямую в базе (например через INSERT), база сама поставит текущее время
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),   #формат записи
-        server_default="now()",    # Database-side default
-        nullable=False
+        DateTime(timezone=True),  # формат записи
+        server_default="now()",  # Database-side default
+        nullable=False,
     )
 
     # role_id — внешний ключ, который ссылается на таблицу roles
     # ondelete="SET NULL"→ что делать, если роль, на которую ссылается пользователь, будет удалена?
-    #В этом случае у пользователя просто очистится role_id (станет NULL),
-    #вместо того чтобы удалить самого пользователя или вызвать ошибку.
+    # В этом случае у пользователя просто очистится role_id (станет NULL),
+    # вместо того чтобы удалить самого пользователя или вызвать ошибку.
     role_id: Mapped[int | None] = mapped_column(
         Integer,
-        ForeignKey("roles.id", ondelete="SET NULL"),   # что такое ondelete
-        nullable=True
+        ForeignKey("roles.id", ondelete="SET NULL"),  # что такое ondelete
+        nullable=True,
     )
 
     # __repr__ — удобное текстовое представление объекта при печати (для отладки)

@@ -2,6 +2,7 @@
 Сервисный слой для работы с пользователями.
 Содержит всю бизнес-логику, связанную с User.
 """
+
 from datetime import timedelta, datetime, timezone
 
 import jwt
@@ -9,28 +10,39 @@ from jwt import PyJWTError
 from pwdlib import PasswordHash
 
 from src.config import setting
-from src.exceptions import ObjectAlreadyExistsException, UserAlreadyExistsException, InvalidCredentialsException, \
-    InvalidTokenException, ObjectNotFoundException, UserNotFoundException, ForeignKeyException, InvalidRoleException
+from src.exceptions import (
+    ObjectAlreadyExistsException,
+    UserAlreadyExistsException,
+    InvalidCredentialsException,
+    InvalidTokenException,
+    ObjectNotFoundException,
+    UserNotFoundException,
+    ForeignKeyException,
+    InvalidRoleException,
+)
 from src.schemas.users import UserAddDTO
 from src.services.base import BaseService
 
-#PasswordHash с рекомендованными настройками — он будет использоваться для хэширования и проверки паролей.
+# PasswordHash с рекомендованными настройками — он будет использоваться для хэширования и проверки паролей.
 password_hash = PasswordHash.recommended()
 
 
 class UserService(BaseService):
-
     def create_access_token(self, data: dict):
         to_encode = data.copy()
-        expire = datetime.now(timezone.utc) + timedelta(minutes=setting.ACCESS_TOKEN_EXPIRE_MINUTES)
+        expire = datetime.now(timezone.utc) + timedelta(
+            minutes=setting.ACCESS_TOKEN_EXPIRE_MINUTES
+        )
         to_encode.update({"exp": expire})
-        encoded_jwt = jwt.encode(to_encode, setting.SECRET_KEY, algorithm=setting.ALGORITHM)
+        encoded_jwt = jwt.encode(
+            to_encode, setting.SECRET_KEY, algorithm=setting.ALGORITHM
+        )
         return encoded_jwt
 
     def get_password_hash(self, password: str) -> str:
         return password_hash.hash(password)
 
-    def verify_password(self,plain_password, hashed_password):
+    def verify_password(self, plain_password, hashed_password):
         return password_hash.verify(plain_password, hashed_password)
 
     def decode_token(self, token):
@@ -39,15 +51,13 @@ class UserService(BaseService):
         except PyJWTError:
             raise InvalidTokenException
 
-
-
     async def register_user(self, data):
         hashed_password = self.get_password_hash(data.password)
         token_data = UserAddDTO(
             username=data.username,
             email=data.email,
             hashed_password=hashed_password,
-            role_id=3
+            role_id=3,
         )
         try:
             user = await self.db.users.add(token_data)
@@ -65,18 +75,18 @@ class UserService(BaseService):
             raise InvalidCredentialsException
 
         data = {
-            "id":user.id,
+            "id": user.id,
             "username": user.username,
             "email": user.email,
             "role": user.role_id,
-            "is_active": user.is_active
+            "is_active": user.is_active,
         }
         token = self.create_access_token(data)
         return token
 
     async def change_role(self, user_id, data):
         try:
-            user = await self.db.users.edit(data,id=user_id)
+            user = await self.db.users.edit(data, id=user_id)
         except ObjectNotFoundException:
             raise UserNotFoundException
         except ForeignKeyException:
@@ -92,5 +102,3 @@ class UserService(BaseService):
             raise UserNotFoundException
         await self.db.commit()
         return user
-
-

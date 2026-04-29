@@ -12,4 +12,3 @@ class RoleDTO(BaseModel):
     description: str
 
     model_config = ConfigDict(from_attributes=True)
-

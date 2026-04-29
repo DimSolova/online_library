@@ -1,5 +1,6 @@
 from src.services.users import UserService
 
+
 def test_decode_and_encode_token():
     data = {"user_id": 1}
     jwt_token = UserService().create_access_token(data)

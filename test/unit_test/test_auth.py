@@ -6,4 +6,3 @@ def test_create_access_token():
     jwt_token = UserService().create_access_token(data)
     assert jwt_token
     assert isinstance(jwt_token, str)
-

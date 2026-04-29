@@ -8,19 +8,19 @@ class UserAddRequestDTO(BaseModel):
     email: EmailStr
     password: str
 
+
 class UserLoginDTO(BaseModel):
     """Схема для логина пользователя"""
+
     email: EmailStr
     password: str
 
     model_config = ConfigDict(
         json_schema_extra={
-            "example": {
-                "email": "user@example.com",
-                "password": "string"
-            }
+            "example": {"email": "user@example.com", "password": "string"}
         }
     )
+
 
 class UserAddDTO(BaseModel):
     username: str
@@ -28,13 +28,15 @@ class UserAddDTO(BaseModel):
     hashed_password: str
     role_id: int
 
+
 class UserTokenDTO(BaseModel):
     id: int
     username: str
     email: EmailStr
     role: int
-    is_active:bool
-    exp:int
+    is_active: bool
+    exp: int
+
 
 class UserDTO(BaseModel):
     id: int
@@ -49,11 +51,14 @@ class UserDTO(BaseModel):
         from_attributes=True,  # позволяет принимать SQLAlchemy объекты
     )
 
+
 class UserWithHashDTO(UserDTO):
     hashed_password: str
 
+
 class ChangeRoleRequest(BaseModel):
     role_id: int
+
 
 class ChangeActiveRequest(BaseModel):
     is_active: bool

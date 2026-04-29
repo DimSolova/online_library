@@ -15,9 +15,11 @@ class BookAddRequestDTO(BaseModel):
                 "title": "Идиот",
                 "description": "Книга про идиота",
                 "isbn": "9785389071278",
-                "author": "Ф.М. Достоевский"
+                "author": "Ф.М. Достоевский",
             }
-        })
+        }
+    )
+
 
 class BookDTOAdd(BookAddRequestDTO):
     added_by_id: int
@@ -37,7 +39,9 @@ class BookPATCHDTO(BaseModel):
                 "isbn": "9785389071278",
                 "author": "Ф.М. Достоевский",
             }
-        })
+        }
+    )
+
 
 class BookDTO(BaseModel):
     id: int
@@ -49,5 +53,5 @@ class BookDTO(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    #Очень важный момент при валидировании из модели в схему
+    # Очень важный момент при валидировании из модели в схему
     model_config = ConfigDict(from_attributes=True)

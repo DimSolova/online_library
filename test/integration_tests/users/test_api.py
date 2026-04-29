@@ -1,20 +1,21 @@
 import pytest
 
 
-@pytest.mark.parametrize("username, email, password, status_code", [
-    ("Solova", "Solova@gmail.com", "qwe", 201),
-    ("Solova", "Solova@gmail.com", "qwe", 409),
-    ("Kot", "Solovagmail.com", "qwe", 422),
-    ("Kot", "Solova@gmailcom", "qwe", 422),
-])
-async def test_auth_flow(username: str, email: str, password: str, status_code: int, ac):
+@pytest.mark.parametrize(
+    "username, email, password, status_code",
+    [
+        ("Solova", "Solova@gmail.com", "qwe", 201),
+        ("Solova", "Solova@gmail.com", "qwe", 409),
+        ("Kot", "Solovagmail.com", "qwe", 422),
+        ("Kot", "Solova@gmailcom", "qwe", 422),
+    ],
+)
+async def test_auth_flow(
+    username: str, email: str, password: str, status_code: int, ac
+):
     resp_register = await ac.post(
         "/auth/register",
-        json={
-            "username":username,
-            "email": email,
-            "password": password
-        }
+        json={"username": username, "email": email, "password": password},
     )
 
     assert resp_register.status_code == status_code
@@ -22,11 +23,7 @@ async def test_auth_flow(username: str, email: str, password: str, status_code: 
         return
 
     resp_login = await ac.post(
-        "/auth/login",
-        json={
-          "email": email,
-          "password": password
-}
+        "/auth/login", json={"email": email, "password": password}
     )
     assert resp_login.status_code == 200
     assert ac.cookies["access_token"]
