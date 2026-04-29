@@ -1,9 +1,19 @@
+from typing import TypeVar
 
+from pydantic import BaseModel
 
+from src.models import Base
+
+"""Мы создаем именованные переменные типов, сперциальный placeholder
+помогает pyright узнать что будет находится тип BaseModel или Base
+и будет наследоваться от них"""
+SchemaType = TypeVar("SchemaType", bound=BaseModel)
+DBModelType = TypeVar("DBModelType", bound=Base)
 
 class DataMapper:
-    db_model = None
-    schema = None
+    """Для помощи pyright, что бы он понимал от какого типа может наследоваться """
+    db_model: type[DBModelType] = None
+    schema: type[SchemaType] = None
 
     """Принимаем данные из Sqlalchemy и возвращаем  pydantic схему"""
     @classmethod

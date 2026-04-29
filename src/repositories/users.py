@@ -3,8 +3,7 @@ from sqlalchemy import select
 
 from src.models import UserOrm
 from src.repositories.base import BaseRepository
-from src.repositories.mapper.mapper import UserDataMapper
-from src.schemas.users import UserWithHashDTO
+from src.repositories.mapper.mapper import UserDataMapper, UserHashDataMapper
 
 
 class UserRepository(BaseRepository):
@@ -20,4 +19,4 @@ class UserRepository(BaseRepository):
         model = res.scalars().one_or_none()
         if not model:
             return None
-        return UserWithHashDTO.model_validate(model)
+        return UserHashDataMapper.map_to_domain_entity(model)
