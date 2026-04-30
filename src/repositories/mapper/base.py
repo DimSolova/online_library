@@ -1,4 +1,4 @@
-from typing import TypeVar
+from typing import TypeVar, Generic
 
 from pydantic import BaseModel
 
@@ -11,11 +11,11 @@ SchemaType = TypeVar("SchemaType", bound=BaseModel)
 DBModelType = TypeVar("DBModelType", bound=Base)
 
 
-class DataMapper:
+class DataMapper(Generic[DBModelType, SchemaType]):
     """Для помощи pyright, что бы он понимал от какого типа может наследоваться"""
 
-    db_model: type[DBModelType] = None
-    schema: type[SchemaType] = None
+    db_model: type[DBModelType]
+    schema: type[SchemaType]
 
     """Принимаем данные из Sqlalchemy и возвращаем  pydantic схему"""
 
