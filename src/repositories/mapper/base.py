@@ -20,11 +20,11 @@ class DataMapper:
     """Принимаем данные из Sqlalchemy и возвращаем  pydantic схему"""
 
     @classmethod
-    def map_to_domain_entity(cls, data):
+    def map_to_domain_entity(cls, data) -> SchemaType:
         return cls.schema.model_validate(data, from_attributes=True)
 
     """Принимает pydantic схемы и возвращаем модель алхимии"""
 
     @classmethod
-    def map_to_persistence_entity(cls, data):
+    def map_to_persistence_entity(cls, data: SchemaType) -> DBModelType:
         return cls.db_model(**data.model_dump())
