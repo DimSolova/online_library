@@ -1,4 +1,34 @@
+import logging
+from typing import NoReturn
+
+from asyncpg import ForeignKeyViolationError, UniqueViolationError
 from fastapi import HTTPException
+from sqlalchemy.exc import IntegrityError
+
+
+def handle_db_integrity_error(ex: IntegrityError, operation: str = "operation") -> None:
+    """Централизованная обработка IntegrityError из SQLAlchemy + asyncpg"""
+    cause = ex.orig.__cause__ if ex.orig is not None else None
+
+    if isinstance(cause, UniqueViolationError):
+        logging.warning(f"[{operation}] Нарушение уникальности: {ex}")
+        raise ObjectAlreadyExistsException from ex
+
+    if isinstance(cause, ForeignKeyViolationError):
+        logging.warning(f"[{operation}] Нарушение внешнего ключа: {ex}")
+        raise ForeignKeyException from ex
+
+    logging.error(f"[{operation}] Неизвестная IntegrityError: {ex}")
+    raise ex
+
+
+def raise_integrity_error(ex: IntegrityError, operation: str) -> NoReturn:
+    """Помогает pyright понять, что дальше код не выполнится"""
+    handle_db_integrity_error(ex, operation=operation)
+    raise RuntimeError("Unreachable code")  # только для type checker
+
+
+# ====================== БАЗОВЫЕ ИСКЛЮЧЕНИЯ ======================
 
 
 class LibraryException(Exception):
@@ -52,9 +82,7 @@ class NotBookOwnerException(LibraryException):
     detail = "Вы не являетесь владельцем этой книги"
 
 
-"""Исключения для FastAPI"""
-
-
+# ====================== HTTP ИСКЛЮЧЕНИЯ ======================
 class LibraryHTTPException(HTTPException):
     status_code = 500
     detail = "Object not found"

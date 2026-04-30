@@ -20,7 +20,7 @@ from src.exceptions import (
     UserAlreadyExistsException,
     UserNotFoundException,
 )
-from src.schemas.users import UserAddDTO, UserDTO, ChangeRoleRequest, ChangeActiveRequest
+from src.schemas.users import ChangeActiveRequest, ChangeRoleRequest, UserAddDTO, UserDTO
 from src.services.base import BaseService
 
 # PasswordHash с рекомендованными настройками — он будет использоваться для хэширования и проверки паролей.

@@ -1,4 +1,5 @@
 import logging
+from typing import NoReturn
 
 from asyncpg import ForeignKeyViolationError, UniqueViolationError
 from pydantic import BaseModel
@@ -10,6 +11,8 @@ from src.exceptions import (
     ForeignKeyException,
     ObjectAlreadyExistsException,
     ObjectNotFoundException,
+    handle_db_integrity_error,
+    raise_integrity_error,
 )
 from src.models.base import Base
 from src.repositories.mapper.base import DataMapper
@@ -52,16 +55,7 @@ class BaseRepository:
         try:
             result = await self.session.execute(add_stmt)
         except IntegrityError as ex:
-            # pyright ругается , надо сделать проверку
-            cause = ex.orig.__cause__ if ex.orig is not None else None
-            logging.error(f"Не удалось добавить данные в БД, {data} тип ошибки {type(ex.orig.__cause__)=}")
-            if isinstance(cause, UniqueViolationError):
-                raise ObjectAlreadyExistsException from ex
-            else:
-                logging.error(
-                    f"Неизвестная ошибка, не удалось добавить данные в БД {data}тип ошибки  {type(ex.__cause__)=}"
-                )
-                raise ex
+            raise_integrity_error(ex, "add")
         model = result.scalar_one()
         return self.mapper.map_to_domain_entity(model)
 
@@ -78,18 +72,7 @@ class BaseRepository:
         try:
             res = await self.session.execute(update_stmt)
         except IntegrityError as ex:
-            cause = ex.orig.__cause__ if ex.orig is not None else None
-
-            logging.error(f"Не удалось добавить данные в БД, {data} тип ошибки {type(ex.orig.__cause__)=}")
-            if isinstance(cause, UniqueViolationError):
-                raise ObjectAlreadyExistsException from ex
-            elif isinstance(ex.orig.__cause__, ForeignKeyViolationError):
-                raise ForeignKeyException from ex
-            else:
-                logging.error(
-                    f"Неизвестная ошибка, не удалось добавить данные в БД {data}тип ошибки  {type(ex.__cause__)=}"
-                )
-                raise ex
+            raise_integrity_error(ex, "edit")
         try:
             model = res.scalar_one()
         except NoResultFound:

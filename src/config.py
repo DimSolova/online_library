@@ -27,4 +27,4 @@ class Settings(BaseSettings):
     )
 
 
-setting = Settings() # type: ignore[call-arg]
+setting = Settings()  # type: ignore[call-arg]

@@ -15,7 +15,8 @@ from src.schemas.users import (
     ChangeActiveRequest,
     ChangeRoleRequest,
     UserAddRequestDTO,
-    UserLoginDTO, UserDTO,
+    UserDTO,
+    UserLoginDTO,
 )
 from src.services.users import UserService
 
