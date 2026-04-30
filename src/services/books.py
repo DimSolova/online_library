@@ -12,18 +12,18 @@ from src.services.base import BaseService
 
 
 class BooksService(BaseService):
-    async def check_author(self, user, book_id):
+    async def check_author(self, user: UserTokenDTO, book_id: int):
         """Если авторизован как админ, то пропускаем этот блок
         Если автор, то делаем запрос в БД на проверку автора"""
         if user.role == UserRole.ADMIN:
             return
-        book: BookDTO = await self.db.books.get_one_or_none(id=book_id)
+        book: BookDTO | None = await self.db.books.get_one_or_none(id=book_id)
         if book is None:
             raise BookNotFoundException
         if book.added_by_id != user.id:
             raise NotBookOwnerException
 
-    async def get_book(self, book_id: int):
+    async def get_book(self, book_id: int) -> BookDTO:
         try:
             book = await self.db.books.get_one(id=book_id)
         except ObjectNotFoundException:

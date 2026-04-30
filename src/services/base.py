@@ -2,7 +2,13 @@ from src.utils.db_manager import DBManager
 
 
 class BaseService:
-    db: DBManager | None
+    """
+    Базовый класс для всех сервисов.
+    db инжектится через Depends в FastAPI или передаётся вручную в тестах.
+    """
 
-    def __init__(self, db: DBManager | None = None) -> None:
-        self.db = db
+    db: DBManager
+
+    def __init__(self, db: DBManager | None = None):
+        """db может быть None только в unit-тестах, где не используется БД"""
+        self.db = db  # type: ignore  # pyright будет знать, что в runtime db всегда есть
