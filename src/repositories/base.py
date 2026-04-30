@@ -52,8 +52,10 @@ class BaseRepository:
         try:
             result = await self.session.execute(add_stmt)
         except IntegrityError as ex:
+            # pyright ругается , надо сделать проверку
+            cause = ex.orig.__cause__ if ex.orig is not None else None
             logging.error(f"Не удалось добавить данные в БД, {data} тип ошибки {type(ex.orig.__cause__)=}")
-            if isinstance(ex.orig.__cause__, UniqueViolationError):
+            if isinstance(cause, UniqueViolationError):
                 raise ObjectAlreadyExistsException from ex
             else:
                 logging.error(
@@ -76,8 +78,10 @@ class BaseRepository:
         try:
             res = await self.session.execute(update_stmt)
         except IntegrityError as ex:
+            cause = ex.orig.__cause__ if ex.orig is not None else None
+
             logging.error(f"Не удалось добавить данные в БД, {data} тип ошибки {type(ex.orig.__cause__)=}")
-            if isinstance(ex.orig.__cause__, UniqueViolationError):
+            if isinstance(cause, UniqueViolationError):
                 raise ObjectAlreadyExistsException from ex
             elif isinstance(ex.orig.__cause__, ForeignKeyViolationError):
                 raise ForeignKeyException from ex
