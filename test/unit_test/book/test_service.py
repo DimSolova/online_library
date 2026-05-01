@@ -1,7 +1,7 @@
 import pytest
 
 from src.api.dependencies import PaginationParams, get_current_user
-from src.schemas.books import BookAddRequestDTO, BookDTO
+from src.schemas.books import BookAddRequestDTO, BookDTO, BookPATCHDTO
 from src.services.books import BooksService
 from test.helpers.auth import login_as_author
 
@@ -75,3 +75,18 @@ async def test_edit_book(ac, db):
     assert len(book_dto.isbn) <= 13
     assert book_dto.author
     assert isinstance(book_dto, BookDTO)
+
+async def test_partially_edit_book(ac, db):
+    book = await db.books.get_all()
+    book_id = book[0].id
+    assert book_id
+
+    resp_author = await login_as_author(ac, "author1")
+    token = resp_author.cookies["access_token"]
+    user = get_current_user(token)
+
+    user_data = BookPATCHDTO(
+        title="Пес",
+        author="Новый автор",
+    )
+    book_dto = await BooksService(db).partially_edit_book(user_data, user, book_id)
