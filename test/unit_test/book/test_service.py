@@ -44,4 +44,8 @@ async def test_add_book(ac, db):
         isbn="1234567890987",
         author="Ф.М. Достоевский",
     )
-    add_book = await BooksService(db).add_book(user, user_data)
+    book_dto = await BooksService(db).add_book(user, user_data)
+    assert book_dto.title
+    assert len(book_dto.isbn) <= 13
+    assert book_dto.author
+    assert isinstance(book_dto, BookDTO)
