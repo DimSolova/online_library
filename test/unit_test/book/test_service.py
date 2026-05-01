@@ -53,3 +53,25 @@ async def test_add_book(ac, db):
     assert len(book_dto.isbn) <= 13
     assert book_dto.author
     assert isinstance(book_dto, BookDTO)
+
+
+async def test_edit_book(ac, db):
+    book = await db.books.get_all()
+    book_id = book[0].id
+    assert book_id
+
+    resp_author = await login_as_author(ac, "author1")
+    token = resp_author.cookies["access_token"]
+    user = get_current_user(token)
+
+    user_data = BookAddRequestDTO(
+        title="Бес",
+        description="Книга о Бесах",
+        isbn="1234567890986",
+        author="Другой автор",
+    )
+    book_dto = await BooksService(db).edit_book(user_data, user, book_id)
+    assert book_dto.title
+    assert len(book_dto.isbn) <= 13
+    assert book_dto.author
+    assert isinstance(book_dto, BookDTO)
