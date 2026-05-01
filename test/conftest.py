@@ -80,13 +80,11 @@ async def setup_database(ac, check_test):
             await _db.users.add(data)
         await _db.commit()
 
+
 @pytest.fixture(scope="session")
 async def authenticated_author1(setup_database, ac):
-    response = await ac.post("/auth/login",json={
-  "email": "author1@test.com",
-  "password": "author123"
-})
+    response = await ac.post("/auth/login", json={"email": "author1@test.com", "password": "author123"})
     assert response.status_code == 200
     assert ac.cookies["access_token"]
 
-    yield  ac
+    yield ac
