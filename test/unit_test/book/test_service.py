@@ -90,3 +90,21 @@ async def test_partially_edit_book(ac, db):
         author="Новый автор",
     )
     book_dto = await BooksService(db).partially_edit_book(user_data, user, book_id)
+    assert book_dto.title
+    assert len(book_dto.isbn) <= 13
+    assert book_dto.author
+    assert isinstance(book_dto, BookDTO)
+
+async def test_delete_book(ac, db):
+    books = await db.books.get_all()
+    book_id = books[0].id
+    assert book_id
+
+    resp_author = await login_as_author(ac, "author1")
+    token = resp_author.cookies["access_token"]
+    user = get_current_user(token)
+
+    await BooksService(db).delete_book(user, book_id)
+    books = await db.books.get_all()
+    for book in books:
+        assert book.id != book_id
