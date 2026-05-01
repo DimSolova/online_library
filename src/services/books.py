@@ -1,3 +1,4 @@
+from src.api.dependencies import AuthorOrAdminDep
 from src.constants.roles import UserRole
 from src.exceptions import (
     BookNotFoundException,
@@ -39,7 +40,7 @@ class BooksService(BaseService):
         )
         return books
 
-    async def add_book(self, user, data):
+    async def add_book(self, user: AuthorOrAdminDep, data: BookAddRequestDTO):
         """Добавляет новую книгу в библиотеку.
 
         Args:

@@ -2,6 +2,7 @@ import json
 
 import pytest
 from httpx import ASGITransport, AsyncClient
+from pytest_asyncio.plugin import scope
 
 from src.api.dependencies import get_db
 from src.config import setting
@@ -78,3 +79,14 @@ async def setup_database(ac, check_test):
         for data in users_schemas:
             await _db.users.add(data)
         await _db.commit()
+
+@pytest.fixture(scope="session")
+async def authenticated_author1(setup_database, ac):
+    response = await ac.post("/auth/login",json={
+  "email": "author1@test.com",
+  "password": "author123"
+})
+    assert response.status_code == 200
+    assert ac.cookies["access_token"]
+
+    yield  ac
