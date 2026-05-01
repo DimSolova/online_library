@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Integer, String, DateTime, ForeignKey, UniqueConstraint
+from sqlalchemy import DateTime, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.models.base import Base
@@ -14,8 +14,8 @@ class ReviewOrm(Base):
     text: Mapped[str | None] = mapped_column(String(255), nullable=True)
     rating: Mapped[int] = mapped_column(Integer, nullable=False)
 
-    book_id: Mapped[int] = mapped_column(Integer, ForeignKey('books.id'))
-    user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'))
+    book_id: Mapped[int] = mapped_column(Integer, ForeignKey("books.id"))
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"))
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),  ##формат записи
@@ -29,6 +29,4 @@ class ReviewOrm(Base):
         nullable=False,
     )
 
-    __table_args__ = (
-        UniqueConstraint("user_id", "book_id", name="uq_user_book_review"),
-    )
+    __table_args__ = (UniqueConstraint("user_id", "book_id", name="uq_user_book_review"),)

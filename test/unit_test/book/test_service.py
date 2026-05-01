@@ -76,6 +76,7 @@ async def test_edit_book(ac, db):
     assert book_dto.author
     assert isinstance(book_dto, BookDTO)
 
+
 async def test_partially_edit_book(ac, db):
     book = await db.books.get_all()
     book_id = book[0].id
@@ -94,6 +95,7 @@ async def test_partially_edit_book(ac, db):
     assert len(book_dto.isbn) <= 13
     assert book_dto.author
     assert isinstance(book_dto, BookDTO)
+
 
 async def test_delete_book(ac, db):
     books = await db.books.get_all()
