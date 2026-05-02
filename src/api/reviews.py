@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter
 
 from src.api.dependencies import UserIdDep, DBDep
 from src.exceptions import ReviewAlreadyExistsException, ReviewAlreadyExistsHTTPException, BookNotFoundException, \

@@ -1,10 +1,10 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class ReviewAddRequestDTO(BaseModel):
-    rating: int
+    rating: int = Field(ge=1, le=5)
     text: str
 
 class ReviewAddDTO(ReviewAddRequestDTO):
