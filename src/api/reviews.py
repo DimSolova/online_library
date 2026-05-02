@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Query
 
 from src.api.dependencies import UserIdDep, DBDep
+from src.exceptions import ReviewAlreadyExistsException, ReviewAlreadyExistsHTTPException, BookNotFoundException, \
+    BookNotFoundHTTPException
 from src.schemas.reviews import ReviewAddRequestDTO
 from src.services.reviews import ReviewsService
 
@@ -11,12 +13,18 @@ async def add_review(
         user: UserIdDep,
         db:DBDep,
         data: ReviewAddRequestDTO,
-        book_id = int,
+        book_id: int,
 ):
-    review = await ReviewsService(db).add_review(
-        book_id,
-        data
-    )
+    try:
+        review = await ReviewsService(db).add_review(
+            user,
+            book_id,
+            data
+        )
+    except ReviewAlreadyExistsException:
+        raise ReviewAlreadyExistsHTTPException
+    except BookNotFoundException:
+        raise BookNotFoundHTTPException
     return {
         "status": "success",
         "data": review

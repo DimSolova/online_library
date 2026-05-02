@@ -1,14 +1,27 @@
-from src.schemas.reviews import ReviewAddRequestDTO
+from src.exceptions import ObjectAlreadyExistsException, ReviewAlreadyExistsException, ForeignKeyException, \
+    BookNotFoundException
+from src.schemas.reviews import ReviewAddRequestDTO, ReviewAddDTO
 from src.services.base import BaseService
 
 
 class ReviewsService(BaseService):
     async def add_review(
             self,
-            book_id: int,
+            user,
+            book_id,
             data: ReviewAddRequestDTO
     ):
+        add_review = ReviewAddDTO(
+            **data.model_dump(),
+            user_id=user.id,
+            book_id=book_id
+        )
+        try:
+            res = await self.db.review.add(add_review)
+            await self.db.commit()
+        except ObjectAlreadyExistsException:
+            raise ReviewAlreadyExistsException
+        except ForeignKeyException:
+            raise BookNotFoundException
 
-        print(book_id)
-        print(data)
-        return book_id
+        return res

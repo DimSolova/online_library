@@ -49,6 +49,9 @@ class UserAlreadyExistsException(LibraryException):
 class ISBNAlreadyExistsException(LibraryException):
     detail = "Книга с таким ISBN уже существует"
 
+class ReviewAlreadyExistsException(LibraryException):
+    detail = "Вы уже оставили отзыв"
+
 
 class InvalidCredentialsException(LibraryException):
     detail = "Неверный Логин или пароль"
@@ -99,6 +102,10 @@ class UserAlreadyExistsHTTPException(LibraryHTTPException):
 class ISBNBookAlreadyExistsHTTPException(LibraryHTTPException):
     status_code = 409
     detail = "Книга с таким ISBN уже существует"
+
+class ReviewAlreadyExistsHTTPException(LibraryHTTPException):
+    status_code = 409
+    detail = "Вы уже оставили отзыв"
 
 
 class InvalidCredentialsHTTPException(LibraryHTTPException):
