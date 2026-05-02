@@ -1,9 +1,13 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import DateTime, ForeignKey, Integer, String, UniqueConstraint
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.models.base import Base
+
+if TYPE_CHECKING:
+    from src.models.books import BookOrm
 
 
 class ReviewOrm(Base):
@@ -11,7 +15,7 @@ class ReviewOrm(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
 
-    text: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    text: Mapped[str | None] = mapped_column(String(500), nullable=True)
     rating: Mapped[int] = mapped_column(Integer, nullable=False)
 
     book_id: Mapped[int] = mapped_column(Integer, ForeignKey("books.id"))
@@ -29,4 +33,8 @@ class ReviewOrm(Base):
         nullable=False,
     )
 
+    # Не позволяет одному пользователю делать несколько отзывов на одну book_id
     __table_args__ = (UniqueConstraint("user_id", "book_id", name="uq_user_book_review"),)
+
+    # === Relationships ===
+    book: Mapped["BookOrm"] = relationship("BookOrm", back_populates="reviews")

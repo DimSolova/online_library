@@ -1,9 +1,13 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from src.models import Base  # твой базовый класс
+from src.models.base import Base
+
+if TYPE_CHECKING:
+    from src.models.reviews import ReviewOrm
 
 
 class BookOrm(Base):
@@ -34,6 +38,12 @@ class BookOrm(Base):
         DateTime(timezone=True),  ##формат записи
         server_default="now()",  ## значение по умолчанию при создании
         nullable=False,
+    )
+
+    # === Relationships ===
+    reviews: Mapped[list["ReviewOrm"]] = relationship(
+        "ReviewOrm",  # ← обязательно
+        back_populates="book",
     )
 
     # здесь нужен блок коментарий
