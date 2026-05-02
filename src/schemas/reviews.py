@@ -7,10 +7,11 @@ class ReviewAddRequestDTO(BaseModel):
     rating: int = Field(ge=1, le=5)
     text: str
 
-class ReviewAddDTO(ReviewAddRequestDTO):
 
+class ReviewAddDTO(ReviewAddRequestDTO):
     book_id: int
     user_id: int
+
 
 class ReviewDTO(ReviewAddRequestDTO):
     id: int

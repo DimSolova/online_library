@@ -6,5 +6,3 @@ from src.repositories.mapper.mapper import ReviewDataMapper
 class ReviewRepository(BaseRepository):
     model = ReviewOrm
     mapper = ReviewDataMapper
-
-
