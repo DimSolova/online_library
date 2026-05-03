@@ -1,6 +1,6 @@
 from src.models import BookOrm, ReviewOrm, RoleOrm, UserOrm
 from src.repositories.mapper.base import DataMapper
-from src.schemas.books import BookDTO
+from src.schemas.books import BookDTO, BookWithRelsDTO
 from src.schemas.reviews import ReviewDTO
 from src.schemas.roles import RoleDTO
 from src.schemas.users import UserDTO, UserWithHashDTO
@@ -19,6 +19,11 @@ class UserHashDataMapper(DataMapper):
 class BookDataMapper(DataMapper):
     db_model = BookOrm
     schema = BookDTO
+
+
+class BookWithRelsMapper(DataMapper):
+    db_model = BookOrm
+    schema = BookWithRelsDTO
 
 
 class RoleDataMapper(DataMapper):

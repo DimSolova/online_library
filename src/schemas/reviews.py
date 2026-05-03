@@ -13,7 +13,7 @@ class ReviewAddDTO(ReviewAddRequestDTO):
     user_id: int
 
 
-class ReviewDTO(ReviewAddRequestDTO):
+class ReviewDTO(ReviewAddDTO):
     id: int
 
     created_at: datetime

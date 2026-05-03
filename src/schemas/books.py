@@ -1,6 +1,8 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
+
+from src.schemas.reviews import ReviewDTO
 
 
 class BookAddRequestDTO(BaseModel):
@@ -53,5 +55,6 @@ class BookDTO(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    # Очень важный момент при валидировании из модели в схему
-    model_config = ConfigDict(from_attributes=True)
+
+class BookWithRelsDTO(BookDTO):
+    reviews: list[ReviewDTO] = []
