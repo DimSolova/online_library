@@ -29,3 +29,16 @@ async def add_favorites(
         "data": favorites
     }
 
+@router.delete("/{book_id}")
+async def delete_favorite(
+        user:UserIdDep,
+        db: DBDep,
+        book_id: int
+):
+    await FavoritesServices(db).delete_favorite(user, book_id)
+    return {
+        "status": "success",
+        "data": f"книга с id: {book_id} удалена из избранного"
+    }
+
+
