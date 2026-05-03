@@ -57,4 +57,10 @@ class BookDTO(BaseModel):
 
 
 class BookWithRelsDTO(BookDTO):
-    reviews: list[ReviewDTO] = []
+    """Книга с предзагруженными отзывами."""
+
+    reviews: list[ReviewDTO] = Field(
+        default_factory=list,
+        description="Список отзывов. Поле называется `reviews`, потому что именно так "
+        "именуется relationship в модели BookOrm.",
+    )

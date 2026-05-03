@@ -17,6 +17,24 @@ class BookRepository(BaseRepository):
         title,
         author,
     ):
+        """Получить список книг с фильтрацией и пагинацией.
+
+        Возвращает книги вместе с отзывами (joinedload).
+
+        Args:
+            limit: Максимальное количество книг на странице.
+            offset: Смещение для пагинации (номер страницы * limit).
+            title: Фильтр по названию книги (частичное совпадение).
+            author: Фильтр по имени автора (частичное совпадение).
+
+        Returns:
+            Список доменных сущностей книг с загруженными отзывами.
+        Returns:
+            Список доменных моделей Book с предзагруженным отношением `reviews`.
+        Note:
+            Используется `joinedload`, чтобы все отзывы были загружены
+            в одном SQL-запросе.
+        """
         query = (
             select(self.model).options(joinedload(self.model.reviews))  # type: ignore[attr-defined]
         )
