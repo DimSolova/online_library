@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Integer, BigInteger, ForeignKey, DateTime
+from sqlalchemy import BigInteger, DateTime, ForeignKey, Integer, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.models.base import Base
@@ -21,6 +21,5 @@ class FavoriteOrm(Base):
     )
 
     # Уникальность: один пользователь не может добавить одну и ту же книгу дважды
-    __table_args__ = (
-        {"unique_constraints": [("user_id", "book_id")]},
-    )
+    # Правильный способ задать уникальное ограничение
+    __table_args__ = (UniqueConstraint("user_id", "book_id", name="uq_user_book_favorite"),)
