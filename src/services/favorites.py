@@ -4,6 +4,10 @@ from src.services.base import BaseService
 
 class FavoritesServices(BaseService):
 
+    async def get_favorites(self, user):
+        favorites_dto = await self.db.favorites.get_one_or_none(user_id=user.id)
+        return favorites_dto
+
     async def add_favorites(
             self,
             user,
