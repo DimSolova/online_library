@@ -5,7 +5,7 @@ from src.services.base import BaseService
 class FavoritesServices(BaseService):
 
     async def get_favorites(self, user):
-        favorites_dto = await self.db.favorites.get_all(user_id=user.id)
+        favorites_dto = await self.db.favorites.get_filtered(user_id=user.id)
         return favorites_dto
 
     async def add_favorites(

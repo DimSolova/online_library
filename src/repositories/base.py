@@ -42,6 +42,12 @@ class BaseRepository:
             return None
         return self.mapper.map_to_domain_entity(model)
 
+    async def get_filtered(self, **filtered_by):
+        query = select(self.model).filter_by(**filtered_by)
+        res = await self.session.execute(query)
+        data = res.scalars().all()
+        return [self.mapper.map_to_domain_entity(book) for book in data]
+
     async def get_all(self):
         query = select(self.model)
         res = await self.session.execute(query)
