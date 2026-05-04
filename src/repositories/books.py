@@ -10,7 +10,7 @@ class BookRepository(BaseRepository):
     model = BookOrm
     mapper = BookDataMapper
 
-    async def get_filtered(
+    async def get_filtered_pag(
         self,
         limit,
         offset,

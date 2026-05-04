@@ -48,11 +48,8 @@ class BaseRepository:
         data = res.scalars().all()
         return [self.mapper.map_to_domain_entity(book) for book in data]
 
-    async def get_all(self):
-        query = select(self.model)
-        res = await self.session.execute(query)
-        data = res.scalars().all()
-        return [self.mapper.map_to_domain_entity(book) for book in data]
+    async def get_all(self, *args, **kwargs):
+        return await self.get_filtered()
 
     async def add(self, data):
         data_dict = data.model_dump()

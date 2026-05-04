@@ -35,7 +35,7 @@ class BooksService(BaseService):
 
         page = pagination.page
         per_page = pagination.per_page or 5
-        books = await self.db.books.get_filtered(
+        books = await self.db.books.get_filtered_pag(
             limit=per_page, offset=per_page * (page - 1), title=title, author=author
         )
         return books
