@@ -1,4 +1,5 @@
 import json
+from fastapi_cache.decorator import cache
 
 from fastapi import APIRouter, Query
 
@@ -24,20 +25,14 @@ Grok предложил сделать отдельную Depends на пров�
 
 
 @router.get("/{book_id}")
+@cache(expire=25)
 async def get_book(db: DBDep, book_id: int):
-    book_from_cache = await redis_manager.get("book")
-    if not book_from_cache:
-        try:
-            book = await BooksService(db).get_book(book_id)
-            book_dict = book.model_dump_json()
-            book_json = json.dumps(book_dict)
-            await redis_manager.set("book", book_json,expire=30)
-        except BookNotFoundException:
-            raise BookNotFoundHTTPException
-        return {"status": "success", "data": book}
-    book = json.loads(book_from_cache)
-    book_s = BookDTO.model_validate_json(book)
-    return {"status": "success", "data": book_s}
+    print("Иду в БД")
+    try:
+        book = await BooksService(db).get_book(book_id)
+    except BookNotFoundException:
+        raise BookNotFoundHTTPException
+    return {"status": "success", "data": book}
 
 
 @router.get("")

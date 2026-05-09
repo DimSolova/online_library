@@ -9,6 +9,8 @@ from src.api.reviews import router as router_reviews
 from src.api.users import router as router_users
 from src.init import redis_manager
 
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
 
 @asynccontextmanager
 async def lifespan(app:FastAPI):
@@ -17,6 +19,7 @@ async def lifespan(app:FastAPI):
     После yield его закрытие или например какое-то редактирование приложения
     """
     await redis_manager.connect()
+    FastAPICache.init(RedisBackend(redis_manager), prefix="fastapi-cache")
 
     yield
     await redis_manager.close()
