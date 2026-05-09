@@ -2,6 +2,8 @@ from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
 
 from src.api.books import router as router_books
 from src.api.favorites import router as router_favorites
@@ -9,11 +11,9 @@ from src.api.reviews import router as router_reviews
 from src.api.users import router as router_users
 from src.init import redis_manager
 
-from fastapi_cache import FastAPICache
-from fastapi_cache.backends.redis import RedisBackend
 
 @asynccontextmanager
-async def lifespan(app:FastAPI):
+async def lifespan(app: FastAPI):
     """
     До yield будет выполняться код при запуске приложения,
     После yield его закрытие или например какое-то редактирование приложения
@@ -23,6 +23,7 @@ async def lifespan(app:FastAPI):
 
     yield
     await redis_manager.close()
+
 
 app = FastAPI(lifespan=lifespan)
 

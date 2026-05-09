@@ -1,7 +1,7 @@
 import json
-from fastapi_cache.decorator import cache
 
 from fastapi import APIRouter, Query
+from fastapi_cache.decorator import cache
 
 from src.api.dependencies import AuthorOrAdminDep, DBDep, PaginationDep
 from src.exceptions import (
@@ -13,7 +13,7 @@ from src.exceptions import (
     NotBookOwnerHTTPException,
 )
 from src.init import redis_manager
-from src.schemas.books import BookAddRequestDTO, BookPATCHDTO, BookDTO
+from src.schemas.books import BookAddRequestDTO, BookDTO, BookPATCHDTO
 from src.services.books import BooksService
 
 router = APIRouter(prefix="/books", tags=["Книги"])
