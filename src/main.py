@@ -17,6 +17,7 @@ async def lifespan(app:FastAPI):
     После yield его закрытие или например какое-то редактирование приложения
     """
     await redis_manager.connect()
+
     yield
     await redis_manager.close()
 

@@ -1,3 +1,5 @@
+import json
+
 from fastapi import APIRouter, Query
 
 from src.api.dependencies import AuthorOrAdminDep, DBDep, PaginationDep
@@ -9,7 +11,8 @@ from src.exceptions import (
     NotBookOwnerException,
     NotBookOwnerHTTPException,
 )
-from src.schemas.books import BookAddRequestDTO, BookPATCHDTO
+from src.init import redis_manager
+from src.schemas.books import BookAddRequestDTO, BookPATCHDTO, BookDTO
 from src.services.books import BooksService
 
 router = APIRouter(prefix="/books", tags=["Книги"])
@@ -22,11 +25,19 @@ Grok предложил сделать отдельную Depends на пров�
 
 @router.get("/{book_id}")
 async def get_book(db: DBDep, book_id: int):
-    try:
-        book = await BooksService(db).get_book(book_id)
-    except BookNotFoundException:
-        raise BookNotFoundHTTPException
-    return {"status": "success", "data": book}
+    book_from_cache = await redis_manager.get("book")
+    if not book_from_cache:
+        try:
+            book = await BooksService(db).get_book(book_id)
+            book_dict = book.model_dump_json()
+            book_json = json.dumps(book_dict)
+            await redis_manager.set("book", book_json,expire=30)
+        except BookNotFoundException:
+            raise BookNotFoundHTTPException
+        return {"status": "success", "data": book}
+    book = json.loads(book_from_cache)
+    book_s = BookDTO.model_validate_json(book)
+    return {"status": "success", "data": book_s}
 
 
 @router.get("")
