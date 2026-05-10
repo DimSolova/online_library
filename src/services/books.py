@@ -7,6 +7,7 @@ from src.exceptions import (
     ObjectAlreadyExistsException,
     ObjectNotFoundException,
 )
+from src.init import redis_manager
 from src.schemas.books import BookAddRequestDTO, BookDTO, BookDTOAdd, BookPATCHDTO
 from src.schemas.users import UserTokenDTO
 from src.services.base import BaseService
@@ -75,6 +76,7 @@ class BooksService(BaseService):
         try:
             book = await self.db.books.edit(data, id=book_id)
             await self.db.commit()
+            await redis_manager.invalidate_book_cache()
         except ObjectAlreadyExistsException:
             raise ISBNAlreadyExistsException
         return book
@@ -85,6 +87,7 @@ class BooksService(BaseService):
         try:
             book = await self.db.books.edit(data, exclude_unset=True, id=book_id)
             await self.db.commit()
+            await redis_manager.invalidate_book_cache()
         except ObjectAlreadyExistsException:
             raise ISBNAlreadyExistsException
         return book
