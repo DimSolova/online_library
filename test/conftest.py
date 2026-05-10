@@ -17,6 +17,16 @@ from src.services.users import UserService
 from src.utils.db_manager import DBManager
 
 
+# 2. Мокаем инвалидацию Redis (самое важное сейчас)
+@pytest.fixture(scope="session", autouse=True)
+def mock_redis_invalidate():
+    """Мокаем метод invalidate_book_cache, чтобы тесты не падали"""
+    with mock.patch(
+        "src.init.redis_manager.invalidate_book_cache", new_callable=mock.AsyncMock, return_value=None
+    ) as mock_invalidate:
+        yield mock_invalidate
+
+
 async def get_db_null_pool():
     async with DBManager(session_factory=async_session_maker_null_pool) as db:
         yield db

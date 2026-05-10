@@ -12,8 +12,7 @@ from src.exceptions import (
     NotBookOwnerException,
     NotBookOwnerHTTPException,
 )
-from src.init import redis_manager
-from src.schemas.books import BookAddRequestDTO, BookDTO, BookPATCHDTO
+from src.schemas.books import BookAddRequestDTO, BookPATCHDTO
 from src.services.books import BooksService
 
 router = APIRouter(prefix="/books", tags=["Книги"])
@@ -27,7 +26,6 @@ Grok предложил сделать отдельную Depends на пров�
 @router.get("/{book_id}")
 @cache(expire=900, namespace="book")
 async def get_book(db: DBDep, book_id: int):
-    print("Иду в БД")
     try:
         book = await BooksService(db).get_book(book_id)
     except BookNotFoundException:
@@ -43,7 +41,6 @@ async def get_books(
     title: str | None = Query(None, description="Название книги"),
     author: str | None = Query(None, description="Автор книги"),
 ):
-    print("Иду В БД")
     books = await BooksService(db).get_books(pagination, title, author)
     return {"status": "success", "data": books}
 
