@@ -109,3 +109,4 @@ async def delete_book(book_id: int, user: AuthorOrAdminDep, db: DBDep):
         "status": "success",
         "data": f"книга с id:{book_id} удалена",
     }
+
