@@ -19,6 +19,7 @@ from src.schemas.users import (
     UserLoginDTO,
 )
 from src.services.users import UserService
+from src.tasks.tasks import test_task
 
 router = APIRouter(prefix="/auth", tags=["Пользователи"])
 
@@ -50,7 +51,7 @@ async def logout(user: UserIdDep, response: Response):
 
 @router.get("/me", description="проверяет есть ли в куках jwt токен и возвращает пользователя")
 async def get_me(user: UserIdDep):
-    print(user)
+    test_task.delay()
     return {"status": "success", "data": user}
 
 
