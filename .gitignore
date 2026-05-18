@@ -1,6 +1,7 @@
 # Environments
 .env
 .venv
+src/static
 venv/
 env/
 ENV/
