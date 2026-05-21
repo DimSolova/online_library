@@ -7,5 +7,5 @@ celery_instance = Celery(
     broker=setting.REDIS_URL,
     include=[
         "src.tasks.tasks",
-    ]
+    ],
 )

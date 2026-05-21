@@ -7,9 +7,9 @@ from fastapi_cache.backends.redis import RedisBackend
 
 from src.api.books import router as router_books
 from src.api.favorites import router as router_favorites
+from src.api.images import router as router_images
 from src.api.reviews import router as router_reviews
 from src.api.users import router as router_users
-from src.api.images import router as router_images
 from src.init import redis_manager
 
 

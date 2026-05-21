@@ -1,7 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload, selectinload
 
-from src.models import BookOrm
+from src.database import engine
+from src.models import BookOrm, FavoriteOrm
 from src.repositories.base import BaseRepository
 from src.repositories.mapper.mapper import BookDataMapper, BookWithRelsMapper
 
@@ -46,3 +47,20 @@ class BookRepository(BaseRepository):
         res = await self.session.execute(query)
         model = res.unique().scalars().all()
         return [BookWithRelsMapper.map_to_domain_entity(book) for book in model]
+
+    async def get_favorite_books(self, user_id):
+        books_user_id = (
+            select(FavoriteOrm.book_id)
+            .select_from(FavoriteOrm)
+            .filter(FavoriteOrm.user_id == user_id)
+            .cte("books_user_id")
+        )
+        favorite_book = (
+            select(BookOrm)
+            .select_from(BookOrm)
+            .join(books_user_id, BookOrm.id == books_user_id.c.book_id)
+            .cte("favorite_book")
+        )
+        query = select(favorite_book).select_from(favorite_book)
+        res = await self.session.execute(query)
+        return res

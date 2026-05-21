@@ -77,6 +77,7 @@ class UserService(BaseService):
             "role": user.role_id,
             "is_active": user.is_active,
         }
+        await self.db.books.get_favorite_books(user.id)
         token = self.create_access_token(data)
         return token
 

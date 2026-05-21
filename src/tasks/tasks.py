@@ -1,6 +1,8 @@
-from time import sleep
-from PIL import Image
 import os
+from time import sleep
+
+from PIL import Image
+
 from src.tasks.celery_app import celery_instance
 
 
@@ -8,6 +10,7 @@ from src.tasks.celery_app import celery_instance
 def test_task():
     sleep(5)
     print("Я молодец")
+
 
 @celery_instance.task
 def resize_image(image_path: str):
@@ -21,10 +24,7 @@ def resize_image(image_path: str):
 
     for size in sizes:
         print(size)
-        img_resized = img.resize(
-            (size, int(img.height * (size / img.width))),
-            Image.Resampling.LANCZOS
-        )
+        img_resized = img.resize((size, int(img.height * (size / img.width))), Image.Resampling.LANCZOS)
         new_file_name = f"{name}_{size}px{ext}"
         output_path = os.path.join(output_folder, new_file_name)
         img_resized.save(output_path)
