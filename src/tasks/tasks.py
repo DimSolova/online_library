@@ -1,12 +1,15 @@
+import asyncio
 import os
 from time import sleep
 
 from PIL import Image
 
+from src.database import async_session_maker_null_pool, async_session_maker
 from src.tasks.celery_app import celery_instance
+from src.utils.db_manager import DBManager
 
 
-# @celery_instance.task
+@celery_instance.task
 def test_task():
     sleep(5)
     print("Я молодец")
@@ -30,3 +33,15 @@ def resize_image(image_path: str):
         img_resized.save(output_path)
 
     print(f"Изображение сохраненно в следующих размерах: {sizes} в папке {output_folder}")
+
+async def send_emails_to_users_with_favorites_helper():
+    print("Я Запускаюсь")
+    async with DBManager(session_factory=async_session_maker_null_pool) as db:
+        books = await db.books.get_favorite_books()
+        print(books)
+
+
+@celery_instance.task(name="booking_today_checkin")
+def send_emails_to_users_with_favorites_books():
+    #что бы запустить асинхронный код внутри синхронного, самый известный метод
+    asyncio.run(send_emails_to_users_with_favorites_helper())

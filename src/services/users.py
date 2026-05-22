@@ -22,6 +22,7 @@ from src.exceptions import (
 )
 from src.schemas.users import ChangeActiveRequest, ChangeRoleRequest, UserAddDTO, UserDTO
 from src.services.base import BaseService
+from src.tasks.tasks import send_emails_to_users_with_favorites_books
 
 # PasswordHash с рекомендованными настройками — он будет использоваться для хэширования и проверки паролей.
 password_hash = PasswordHash.recommended()
@@ -77,7 +78,8 @@ class UserService(BaseService):
             "role": user.role_id,
             "is_active": user.is_active,
         }
-        await self.db.books.get_favorite_books(user.id)
+        # await self.db.books.get_favorite_books(user.id)
+        # send_emails_to_users_with_favorites_books(user.id).delay()
         token = self.create_access_token(data)
         return token
 
