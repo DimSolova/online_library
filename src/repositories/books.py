@@ -48,11 +48,11 @@ class BookRepository(BaseRepository):
         model = res.unique().scalars().all()
         return [BookWithRelsMapper.map_to_domain_entity(book) for book in model]
 
-    async def get_favorite_books(self):
+    async def get_favorite_books(self, user_id):
         books_user_id = (
             select(FavoriteOrm.book_id)
             .select_from(FavoriteOrm)
-            .filter(FavoriteOrm.user_id == 50)
+            .filter(FavoriteOrm.user_id == user_id)
             .cte("books_user_id")
         )
         favorite_book = (
@@ -63,4 +63,4 @@ class BookRepository(BaseRepository):
         )
         query = select(favorite_book).select_from(favorite_book)
         res = await self.session.execute(query)
-        return res
+        return res.all()

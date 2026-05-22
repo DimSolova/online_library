@@ -10,9 +10,9 @@ celery_instance = Celery(
     ],
 )
 
-celery_instance.conf.beat_schedule = {
-    "luboe-naazvanie": {
-        "task": "booking_today_checkin",
-        "schedule": 5,
-    }
-}
+# celery_instance.conf.beat_schedule = {
+#     "luboe-naazvanie": {
+#         "task": "booking_today_checkin",
+#         "schedule": 5,
+#     }
+# }

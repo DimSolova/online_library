@@ -34,14 +34,15 @@ def resize_image(image_path: str):
 
     print(f"Изображение сохраненно в следующих размерах: {sizes} в папке {output_folder}")
 
-async def send_emails_to_users_with_favorites_helper():
+async def send_emails_to_users_with_favorites_helper(user_id):
     print("Я Запускаюсь")
     async with DBManager(session_factory=async_session_maker_null_pool) as db:
-        books = await db.books.get_favorite_books()
+        books = await db.books.get_favorite_books(user_id)
         print(books)
 
 
 @celery_instance.task(name="booking_today_checkin")
-def send_emails_to_users_with_favorites_books():
+def send_emails_to_users_with_favorites_books(user_id):
+    print(user_id)
     #что бы запустить асинхронный код внутри синхронного, самый известный метод
-    asyncio.run(send_emails_to_users_with_favorites_helper())
+    asyncio.run(send_emails_to_users_with_favorites_helper(user_id))

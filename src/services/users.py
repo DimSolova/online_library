@@ -78,8 +78,7 @@ class UserService(BaseService):
             "role": user.role_id,
             "is_active": user.is_active,
         }
-        # await self.db.books.get_favorite_books(user.id)
-        # send_emails_to_users_with_favorites_books(user.id).delay()
+        send_emails_to_users_with_favorites_books.delay(user.id)
         token = self.create_access_token(data)
         return token
 
