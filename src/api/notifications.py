@@ -1,0 +1,19 @@
+from fastapi import APIRouter
+
+from src.api.dependencies import DBDep, UserIdDep
+from src.services.favorites import FavoritesServices
+from src.services.notifications import NotificationsServices
+
+router = APIRouter(prefix="/auth/notifications", tags=["Уведомления"])
+
+@router.get("")
+async def get_notifications(
+    db: DBDep
+):
+    notifications = await NotificationsServices(db).get_notifications()
+    return {
+        "status": "success",
+        "data": notifications
+    }
+
+
