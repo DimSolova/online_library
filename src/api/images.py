@@ -13,5 +13,5 @@ async def add_images(file: UploadFile):
     with open(image_path, "wb+") as new_file:
         shutil.copyfileobj(file.file, new_file)
 
-    resize_image.delay(image_path)
+    resize_image.delay(image_path)  # type: ignore[attr-defined]
     return {"status": "success", "data": "images"}

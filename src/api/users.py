@@ -51,7 +51,6 @@ async def logout(user: UserIdDep, response: Response):
 
 @router.get("/me", description="проверяет есть ли в куках jwt токен и возвращает пользователя")
 async def get_me(user: UserIdDep):
-    test_task.delay()
     return {"status": "success", "data": user}
 
 

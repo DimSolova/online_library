@@ -4,7 +4,7 @@ from time import sleep
 
 from PIL import Image
 
-from src.database import async_session_maker_null_pool, async_session_maker
+from src.database import async_session_maker, async_session_maker_null_pool
 from src.tasks.celery_app import celery_instance
 from src.utils.db_manager import DBManager
 
@@ -34,6 +34,7 @@ def resize_image(image_path: str):
 
     print(f"Изображение сохраненно в следующих размерах: {sizes} в папке {output_folder}")
 
+
 async def send_emails_to_users_with_favorites_helper(user_id):
     print("Я Запускаюсь")
     async with DBManager(session_factory=async_session_maker_null_pool) as db:
@@ -44,5 +45,5 @@ async def send_emails_to_users_with_favorites_helper(user_id):
 @celery_instance.task(name="booking_today_checkin")
 def send_emails_to_users_with_favorites_books(user_id):
     print(user_id)
-    #что бы запустить асинхронный код внутри синхронного, самый известный метод
+    # что бы запустить асинхронный код внутри синхронного, самый известный метод
     asyncio.run(send_emails_to_users_with_favorites_helper(user_id))

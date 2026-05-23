@@ -78,7 +78,7 @@ class UserService(BaseService):
             "role": user.role_id,
             "is_active": user.is_active,
         }
-        send_emails_to_users_with_favorites_books.delay(user.id)
+        send_emails_to_users_with_favorites_books.delay(user.id)  # type: ignore[attr-defined]
         token = self.create_access_token(data)
         return token
 
