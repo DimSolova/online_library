@@ -8,6 +8,10 @@ router = APIRouter(prefix="/auth/notifications", tags=["Уведомления"]
 
 
 @router.get("")
-async def get_notifications(db: DBDep):
-    notifications = await NotificationsServices(db).get_notifications()
+async def get_notifications(
+        user: UserIdDep,
+        db: DBDep
+):
+    print(user.id)
+    notifications = await NotificationsServices(db).get_notifications(user.id)
     return {"status": "success", "data": notifications}

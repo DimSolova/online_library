@@ -1,5 +1,6 @@
 from src.repositories.books import BookRepository
 from src.repositories.favorites import FavoriteRepository
+from src.repositories.notifications import NotificationRepository
 from src.repositories.reviews import ReviewRepository
 from src.repositories.roles import RoleRepository
 from src.repositories.users import UserRepository
@@ -17,6 +18,7 @@ class DBManager:
         self.roles = RoleRepository(self.session)
         self.review = ReviewRepository(self.session)
         self.favorites = FavoriteRepository(self.session)
+        self.notifications = NotificationRepository(self.session)
 
         return self
 
