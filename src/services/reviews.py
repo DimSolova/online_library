@@ -23,13 +23,8 @@ class ReviewsService(BaseService):
             message = data.text
             rel_book_id = book_id
 
-
             notifications = NotificationAddDTO(
-                user_id=user_id,
-                title=text,
-                message=message,
-                related_book_id=rel_book_id,
-                related_review_id=res.id
+                user_id=user_id, title=text, message=message, related_book_id=rel_book_id, related_review_id=res.id
             )
             await self.db.notifications.add(notifications)
 

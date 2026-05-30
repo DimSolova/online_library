@@ -1,4 +1,4 @@
-from src.models import BookOrm, FavoriteOrm, ReviewOrm, RoleOrm, UserOrm, NotificationOrm
+from src.models import BookOrm, FavoriteOrm, NotificationOrm, ReviewOrm, RoleOrm, UserOrm
 from src.repositories.mapper.base import DataMapper
 from src.schemas.books import BookDTO, BookWithRelsDTO
 from src.schemas.favorites import FavoriteDTO
@@ -41,6 +41,7 @@ class ReviewDataMapper(DataMapper):
 class FavoriteDataMapper(DataMapper):
     db_model = FavoriteOrm
     schema = FavoriteDTO
+
 
 class NotificationDataMapper(DataMapper):
     db_model = NotificationOrm

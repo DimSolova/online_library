@@ -13,6 +13,7 @@ class NotificationDTO(BaseModel):
     is_read: bool
     created_at: datetime
 
+
 class NotificationAddDTO(BaseModel):
     user_id: int
     title: str
