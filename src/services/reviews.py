@@ -24,7 +24,7 @@ class ReviewsService(BaseService):
             user_id = book.added_by_id
             text = f"вашу книгу оценили в {data.rating}"
 
-            send_notification_to_user.delay(
+            send_notification_to_user.delay(  # type: ignore[attr-defined]
                 user_id=user_id, title=text, message=data.text, related_book_id=book_id, related_review_id=res.id
             )
             #

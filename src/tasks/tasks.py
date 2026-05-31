@@ -51,19 +51,13 @@ def send_emails_to_users_with_favorites_books(user_id):
 
 
 ### таска на добавление уведомлений
-async def send_notification_to_users_with_helper(
-        user_id,
-        title,
-        message,
-        related_book_id,
-        related_review_id
-):
+async def send_notification_to_users_with_helper(user_id, title, message, related_book_id, related_review_id):
     data = NotificationAddDTO(
         user_id=user_id,
         title=title,
         message=message,
         related_book_id=related_book_id,
-        related_review_id=related_review_id
+        related_review_id=related_review_id,
     )
     print("Собрал pydantic схему, запускаем сессию без пула")
     async with DBManager(session_factory=async_session_maker_null_pool) as db:
@@ -73,18 +67,6 @@ async def send_notification_to_users_with_helper(
 
 ### Таска на отправку уведомлений автору книги
 @celery_instance.task
-def send_notification_to_user(
-    user_id:int,
-    title:str,
-    message:str,
-    related_book_id:int,
-    related_review_id:int
-):
+def send_notification_to_user(user_id: int, title: str, message: str, related_book_id: int, related_review_id: int):
     print("отправляем уведомление")
-    asyncio.run(send_notification_to_users_with_helper(
-        user_id,
-        title,
-        message,
-        related_book_id,
-        related_review_id
-    ))
+    asyncio.run(send_notification_to_users_with_helper(user_id, title, message, related_book_id, related_review_id))
