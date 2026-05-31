@@ -7,27 +7,27 @@ from src.exceptions import (
 from src.schemas.notifications import NotificationAddDTO
 from src.schemas.reviews import ReviewAddDTO, ReviewAddRequestDTO
 from src.services.base import BaseService
+from src.tasks.tasks import send_notification_to_user
 
 
 class ReviewsService(BaseService):
     async def add_review(self, user, book_id, data: ReviewAddRequestDTO):
+        """При написании этого метода, когда мы отправляем celery task, нам рекомендуют
+         не вызывать этот метод напрямую из этого сервиса, обратиться
+        к сервису Notification и там написать эту логику"""
         add_review = ReviewAddDTO(**data.model_dump(), user_id=user.id, book_id=book_id)
         try:
             res = await self.db.review.add(add_review)
 
-            #### Пишу откровенный говонокод на добавлени
+            #### Формирую pydantic схему для добавления уведомлений
             book = await self.db.books.get_one(id=book_id)
-            #### Пишу откровенный говонокод на добавлени
             user_id = book.added_by_id
             text = f"вашу книгу оценили в {data.rating}"
-            message = data.text
-            rel_book_id = book_id
 
-            notifications = NotificationAddDTO(
-                user_id=user_id, title=text, message=message, related_book_id=rel_book_id, related_review_id=res.id
+            send_notification_to_user.delay(
+                user_id=user_id, title=text, message=data.text, related_book_id=book_id, related_review_id=res.id
             )
-            await self.db.notifications.add(notifications)
-
+            #
             await self.db.commit()
 
         except ObjectAlreadyExistsException:
