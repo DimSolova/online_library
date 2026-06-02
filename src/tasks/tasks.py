@@ -90,4 +90,5 @@ def clear_all_cache():
         await redis_manager.delete_all_keys(keys)
 
         await redis_manager.close()
+
     asyncio.run(clear_cache())
