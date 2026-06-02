@@ -25,7 +25,6 @@ async def lifespan(app: FastAPI):
         RedisBackend(redis_manager._redis),  # ← передаём внутренний клиент
         prefix="fastapi-cache:",
     )
-
     yield
     await redis_manager.close()
 

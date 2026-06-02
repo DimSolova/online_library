@@ -38,8 +38,12 @@ class RedisManager:
         keys = []
         async for key in self._redis.scan_iter(match=pattern):
             print(key)
-            # keys.append(key)
+            keys.append(key)
         return keys
+
+    async def delete_all_keys(self, redis_keys: list):
+        for key in redis_keys:
+            await self._redis.delete(key)
 
     async def delete(self, key: str):
         await self._redis.delete(key)

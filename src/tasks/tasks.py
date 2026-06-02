@@ -75,7 +75,8 @@ def send_notification_to_user(user_id: int, title: str, message: str, related_bo
 
 async def get_all_keys_redis():
     await redis_manager.connect()
-    await redis_manager.get_all_keys()
+    keys = await redis_manager.get_all_keys()
+    await redis_manager.delete_all_keys(keys)
 
 ### Таска для удаления всего кеша
 @celery_instance.task(name="clear_all_cache")

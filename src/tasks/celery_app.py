@@ -16,11 +16,3 @@ celery_instance.conf.beat_schedule = {
         "schedule": 5
     }
 }
-
-# Закоменченая celery task что бы не мешала в логах
-# celery_instance.conf.beat_schedule = {
-#     "luboe-naazvanie": {
-#         "task": "booking_today_checkin",
-#         "schedule": 5,
-#     }
-# }
