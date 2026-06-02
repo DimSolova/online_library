@@ -75,8 +75,8 @@ def send_notification_to_user(user_id: int, title: str, message: str, related_bo
 ### Таска для удаления всего кеша
 @celery_instance.task(name="clear_all_cache")
 def clear_all_cache():
-
-    async def clear_cache():
+    """Периодическая полная очистка Redis кеша"""
+    async def _run_clear_cache():
         from src.config import setting
         from src.connectors.redis_connector import RedisManager
 
@@ -91,4 +91,4 @@ def clear_all_cache():
 
         await redis_manager.close()
 
-    asyncio.run(clear_cache())
+    asyncio.run(_run_clear_cache())
