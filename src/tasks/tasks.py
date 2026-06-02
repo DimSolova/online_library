@@ -73,12 +73,13 @@ def send_notification_to_user(user_id: int, title: str, message: str, related_bo
     asyncio.run(send_notification_to_users_with_helper(user_id, title, message, related_book_id, related_review_id))
 
 
-async def get_all_keys_redis():
-    await redis_manager.connect()
-    keys = await redis_manager.get_all_keys()
-    await redis_manager.delete_all_keys(keys)
-
 ### Таска для удаления всего кеша
 @celery_instance.task(name="clear_all_cache")
 def clear_all_cache():
-    asyncio.run(get_all_keys_redis())
+
+    async def clear_cache():
+        await redis_manager.connect()
+        keys = await redis_manager.get_all_keys()
+        await redis_manager.delete_all_keys(keys)
+
+    asyncio.run(clear_cache())
