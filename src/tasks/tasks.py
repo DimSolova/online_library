@@ -5,7 +5,6 @@ from time import sleep
 from PIL import Image
 
 from src.database import async_session_maker, async_session_maker_null_pool
-from src.init import redis_manager
 from src.schemas.notifications import NotificationAddDTO
 from src.tasks.celery_app import celery_instance
 from src.utils.db_manager import DBManager
@@ -78,7 +77,15 @@ def send_notification_to_user(user_id: int, title: str, message: str, related_bo
 def clear_all_cache():
 
     async def clear_cache():
+        from src.config import setting
+        from src.connectors.redis_connector import RedisManager
+
+        redis_manager = RedisManager(
+            host=setting.REDIS_HOST,
+            port=setting.REDIS_PORT,
+        )
         await redis_manager.connect()
+
         keys = await redis_manager.get_all_keys()
         await redis_manager.delete_all_keys(keys)
 

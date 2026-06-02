@@ -13,6 +13,6 @@ celery_instance = Celery(
 celery_instance.conf.beat_schedule = {
     "Clear cache": {
         "task": "clear_all_cache",
-        "schedule": 5
+        "schedule": 10
     }
 }
