@@ -5,6 +5,7 @@ from time import sleep
 from PIL import Image
 
 from src.database import async_session_maker, async_session_maker_null_pool
+from src.init import redis_manager
 from src.schemas.notifications import NotificationAddDTO
 from src.tasks.celery_app import celery_instance
 from src.utils.db_manager import DBManager
@@ -70,3 +71,13 @@ async def send_notification_to_users_with_helper(user_id, title, message, relate
 def send_notification_to_user(user_id: int, title: str, message: str, related_book_id: int, related_review_id: int):
     print("отправляем уведомление")
     asyncio.run(send_notification_to_users_with_helper(user_id, title, message, related_book_id, related_review_id))
+
+
+async def get_all_keys_redis():
+    await redis_manager.connect()
+    await redis_manager.get_all_keys()
+
+### Таска для удаления всего кеша
+@celery_instance.task(name="clear_all_cache")
+def clear_all_cache():
+    asyncio.run(get_all_keys_redis())

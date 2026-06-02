@@ -34,6 +34,13 @@ class RedisManager:
         value = await self._redis.get(key)
         return value
 
+    async def get_all_keys(self, pattern: str = "*") -> list[str]:
+        keys = []
+        async for key in self._redis.scan_iter(match=pattern):
+            print(key)
+            # keys.append(key)
+        return keys
+
     async def delete(self, key: str):
         await self._redis.delete(key)
 
