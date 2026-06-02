@@ -1,4 +1,5 @@
 from celery import Celery
+from celery.schedules import crontab
 
 from src.config import setting
 
@@ -10,9 +11,10 @@ celery_instance = Celery(
     ],
 )
 
+#Не работает crontab
 celery_instance.conf.beat_schedule = {
     "Clear cache": {
         "task": "clear_all_cache",
-        "schedule": 10
+        "schedule": crontab(hour=19, minute=45)
     }
 }
