@@ -6,6 +6,17 @@ services:
     ports:
       - "8888:8000"
     networks:
-      - LibraryNetwork
+      - libraryNetwork
     env_file:
       - .env
+  celery_service:
+    container_name: "celery_worker"
+    build:
+      context: .
+    networks:
+      - libraryNetwork
+    command: "celery --app=src.tasks.celery_app:celery_instance worker -l INFO"
+
+networks:
+  libraryNetwork:
+    external: true

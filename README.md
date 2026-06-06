@@ -21,6 +21,7 @@
 ## Вспомогательные команды
 
 docker network create libraryNetwork
+docker build -t library_image .
 
 docker run --name library_db \
 -p 6432:5432 \
