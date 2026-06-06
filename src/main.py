@@ -1,3 +1,4 @@
+import sys
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -14,9 +15,8 @@ from src.api.reviews import router as router_reviews
 from src.api.users import router as router_users
 from src.init import redis_manager
 
-import sys
-
 sys.path.append(str(Path(__file__).parent.parent))
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
