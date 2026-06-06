@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 import uvicorn
 from fastapi import FastAPI
@@ -13,6 +14,9 @@ from src.api.reviews import router as router_reviews
 from src.api.users import router as router_users
 from src.init import redis_manager
 
+import sys
+
+sys.path.append(str(Path(__file__).parent.parent))
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -40,4 +44,4 @@ app.include_router(router_images)
 app.include_router(router_notifications)
 
 if __name__ == "__main__":
-    uvicorn.run(app)
+    uvicorn.run(app, host="0.0.0.0")
