@@ -1,0 +1,11 @@
+services:
+  library_back_service:
+    container_name: "library_back"
+    build:
+      context: .
+    ports:
+      - "8888:8000"
+    networks:
+      - LibraryNetwork
+    env_file:
+      - .env

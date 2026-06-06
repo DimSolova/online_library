@@ -17,3 +17,20 @@
 - PostgreSQL + asyncpg
 - Pydantic v2
 - Alembic (миграции)
+
+## Вспомогательные команды
+
+docker network create libraryNetwork
+
+docker run --name library_db \
+-p 6432:5432 \
+-e POSTGRES_USER=abcde \
+-e POSTGRES_PASSWORD=abcde \
+-e POSTGRES_DB=library \
+--network=libraryNetwork \
+-d postgres:16
+
+docker run --name library \
+-p 8888:8000 \
+--network=libraryNetwork \
+library_image
